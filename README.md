@@ -18,6 +18,8 @@ Rien n'est migré pour l'instant : la milestone 0 est un audit.
   système, l'arborescence, les risques, et le plan de la première milestone.
 - [`docs/FEEL.md`](docs/FEEL.md) — ce que le prototype savait du ressenti :
   valeurs mesurées, méthode, et les pièges déjà payés.
+- [`docs/LICENSES.md`](docs/LICENSES.md) — le registre des dépendances et de
+  leurs licences. Rien n'entre dans le projet sans y figurer.
 
 Le prototype reste dans `../unholy`, intact et jouable. Il sert de
 documentation exécutable, pas de code à traduire.
@@ -25,6 +27,9 @@ documentation exécutable, pas de code à traduire.
 ## Licence
 
 Le moteur est sous GPL-3.0, avec les conditions supplémentaires d'id Software.
-UNHOLY, qui en dérive, l'est donc aussi.
+Le code de jeu, lié au moteur, en dérive et l'est donc aussi : il sera publié.
+
+Les données du jeu — modèles, textures, sons, cartes, interface — restent sous
+nos propres conditions. UNHOLY est destiné à la vente, ce que la GPL autorise.
 
 Aucune donnée de Doom 3 ou de Doom 3 BFG n'est distribuée avec ce jeu.

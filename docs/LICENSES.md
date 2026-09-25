@@ -1,0 +1,69 @@
+# Dépendances et licences
+
+Registre tenu au fil de l'eau. **Rien n'entre dans le projet sans une ligne
+ici.** Une police libre ajoutée à la va-vite pendant une milestone est
+exactement ce qui coûte cher trois ans plus tard, au moment de vendre.
+
+UNHOLY est destiné à la vente. La GPL-3 est acceptée comme contrainte : elle
+autorise la vente, et impose de publier la source correspondante du programme
+dérivé. Les données du jeu, elles, restent sous nos propres conditions.
+
+## Ce qui est publié sous GPL-3
+
+| Élément | Licence | Origine |
+| --- | --- | --- |
+| Moteur RBDOOM-3-BFG | GPL-3.0 + conditions supplémentaires d'id Software | `github.com/RobertBeckebans/RBDOOM-3-BFG` |
+| Nos modifications du moteur | GPL-3.0 | `patches/` |
+| Code de jeu UNHOLY (C++) | GPL-3.0 — lié au moteur, donc programme dérivé | `neo/unholy/` |
+| Scripts de compilation | GPL-3.0 | racine, `CMakeLists.txt` |
+
+À lire avant toute sortie commerciale : `LICENSE_EXCEPTIONS.md` du dépôt
+moteur, qui liste les composants non-GPL, et les conditions supplémentaires de
+la publication Doom 3 BFG.
+
+## Ce qui reste sous nos conditions
+
+Données lues à l'exécution : ce ne sont pas des morceaux du programme. Le dépôt
+moteur traite d'ailleurs les données de Doom 3 BFG de la même façon — elles ne
+font pas partie de sa publication GPL.
+
+| Catégorie | Emplacement | Licence |
+| --- | --- | --- |
+| Modèles et animations | `base/models/unholy/` | à nous |
+| Textures et matières | `base/textures/unholy/`, `base/materials/` | à nous |
+| Sons et musiques | `base/sounds/unholy/` | à nous |
+| Cartes | `base/maps/` | à nous |
+| Interface | `base/guis/unholy/` | à nous |
+
+## Assets tiers
+
+Un par ligne, avec la licence **et le lien de la source**, au moment où il
+entre. Pas après.
+
+| Asset | Usage | Licence | Source | Entré en |
+| --- | --- | --- | --- | --- |
+| _(aucun pour l'instant)_ | | | | |
+
+Assets du prototype Three.js à requalifier avant reprise :
+
+| Asset | Usage | À vérifier |
+| --- | --- | --- |
+| `assault_rifle.glb` | Fusil du militaire | Origine et conditions de la source |
+| `fluorescent_fixture.glb` | Réglette de plafond | Générée par Meshy AI — conditions du service |
+| `wall/floor/ceiling/glass` | Matières de l'immeuble | Origine et conditions ; à reproduire en PBR complet de toute façon |
+| `logo.png` | Titre | À nous |
+
+## Interdits
+
+- **Aucun octet de Doom 3 ou de Doom 3 BFG dans le jeu distribuable.** Ni
+  modèle, ni texture, ni son, ni carte, ni police, ni GUI. Localement, pour
+  vérifier que le moteur tourne, c'est autre chose : ça ne franchit pas la
+  porte du paquet.
+- Aucun asset dont la licence n'est pas écrite ci-dessus.
+
+## Reporté
+
+**Steamworks.** La publication GPL n'inclut pas l'intégration Steam de Doom 3
+BFG. Vendre sur Steam n'en dépend pas, mais lier une bibliothèque propriétaire
+à un programme GPL demande un examen sérieux : milestone 14, après audit, et
+aucune milestone de gameplay n'en dépend.

@@ -31,9 +31,9 @@ Ce que le fork apporte, et qui compte pour ce projet précis :
 | TrenchBroom pour éditer les maps | L'éditeur de Doom 3, qui n'existe qu'avec le jeu du commerce |
 | OBJ, irradiance volumes, cascaded shadow maps | Du temps sur l'éclairage de l'immeuble |
 
-Licence : **GPL-3.0** plus les conditions supplémentaires d'id Software.
-UNHOLY dérivé de ce code est donc GPL-3. À trancher maintenant si le jeu doit
-un jour être fermé — ça ne se rattrape pas après coup.
+Licence : **GPL-3.0** plus les conditions supplémentaires d'id Software, et un
+`LICENSE_EXCEPTIONS.md` qui liste les morceaux non-GPL. Décision prise, voir
+§ 1.4.
 
 **Le choix est arrêté.** Ni Doom 3 original, ni le dépôt d'id comme base de
 travail. RBDOOM-3-BFG est la fondation d'UNHOLY, et il n'y a pas de repli à
@@ -53,12 +53,57 @@ Règle de conduite : si une brique de cette liste réapparaît dans le code
 d'UNHOLY, c'est une erreur. Le prototype Three.js nous a appris à les faire
 nous-mêmes ; la migration consiste justement à arrêter.
 
-### Steam
+### 1.4 Licence et distribution — décidé
 
-La publication GPL de Doom 3 BFG **n'inclut pas l'intégration Steamworks** :
-succès, classements, mise en relation, surcouche. Ce n'est pas bloquant pour
-sortir le jeu, mais c'est un travail à part, à faire le moment venu, et il ne
-faut pas compter dessus comme acquis du moteur.
+**UNHOLY est destiné à la vente sur Steam, et la GPL-3 est acceptée comme
+contrainte du projet.**
+
+La GPL n'interdit pas de vendre : elle impose, à la distribution, de fournir la
+source correspondante du programme couvert, avec de quoi le construire. Le jeu
+peut donc être payant sans rien changer à la licence.
+
+Ce qui tombe sous la GPL et sera publié :
+
+- le moteur RBDOOM-3-BFG et nos modifications éventuelles ;
+- **notre code de jeu C++**, puisqu'il est lié au moteur et forme avec lui un
+  seul programme dérivé ;
+- les scripts de compilation nécessaires à le reconstruire.
+
+Ce qui n'y tombe pas et reste sous nos propres conditions :
+
+- modèles, animations, textures, matières, sons, musiques, cartes, interface.
+  Ce sont des données lues à l'exécution, pas des morceaux du programme. C'est
+  d'ailleurs ainsi que le dépôt lui-même traite les données de Doom 3 BFG, qui
+  ne font pas partie de sa publication GPL et gardent leur propre licence.
+
+Trois règles de conduite qui en découlent, et qui pèsent sur l'architecture :
+
+1. **La frontière passe entre le code et les données, pas ailleurs.** D'où la
+   séparation ci-dessous, et le choix de mettre la logique de jeu en C++ plutôt
+   qu'en `.script` : la logique est de toute façon GPL, autant qu'elle soit là
+   où c'est clair, et garder `base/` pour du contenu.
+2. **Jamais un octet de Doom 3 ou de Doom 3 BFG dans le jeu distribuable.**
+   Localement, pour vérifier que le moteur tourne, c'est autre chose ; ça ne
+   franchit pas la porte.
+3. **Chaque dépendance est inscrite avec sa licence**, au fur et à mesure, dans
+   [`docs/LICENSES.md`](docs/LICENSES.md). Une police libre ajoutée à la va-vite
+   en milestone 1 est exactement ce qui coûte cher trois ans plus tard.
+
+Avant la sortie commerciale, et pas avant : faire relire la structure finale
+par quelqu'un dont c'est le métier, `LICENSE_EXCEPTIONS.md` et les conditions
+supplémentaires d'id comprises. Ce n'est pas un obstacle au prototype, c'est
+une case à cocher avant d'encaisser.
+
+### Steam et Steamworks
+
+La publication GPL **n'inclut pas l'intégration Steamworks** de Doom 3 BFG :
+succès, classements, mise en relation, surcouche. Vendre sur Steam n'en dépend
+pas — un jeu se publie sans aucune de ces fonctions.
+
+Mais lier une bibliothèque propriétaire à un programme GPL est précisément le
+genre de question qui ne s'improvise pas. Steamworks est donc **reporté à une
+milestone dédiée, après un audit de compatibilité de licence**, et n'entre dans
+aucune des milestones de gameplay.
 
 ### La séparation à tenir dès maintenant
 
@@ -258,14 +303,38 @@ Par ordre de ce qui peut arrêter le projet.
 | 1 | **Démarrer sans les données de Doom 3** | Le moteur attend des polices, des GUI, des matériaux par défaut et des `.resources`. Le dépôt livre `base/def`, `materials`, `script`, `textures`, mais pas tout. Un jeu standalone sans une seule ligne de Doom 3 n'est pas le cas d'usage prévu. | **Milestone 1.** On mesure exactement ce qui manque pour afficher une console et une map vide, et on remplace un à un. C'est le premier livrable, avant tout gameplay. |
 | 2 | **Vulkan via MoltenVK sur macOS** | RBDOOM a retiré OpenGL. Sur Mac, Vulkan passe par MoltenVK : une couche de traduction de plus, un SDK à installer, et un point de panne hors de notre code. | Milestone 1, et il se règle **dans** RBDOOM : version du SDK Vulkan, variables d'environnement MoltenVK, drapeaux de compilation. Changer de moteur n'est pas une sortie. Si la machine bloque, la question devient « sur quelle machine on développe », pas « quel moteur ». |
 | 3 | **Wall / ceiling crawl** | Rien de natif. `idPhysics_Player` suppose une gravité vers le bas et un sol. Réorienter la gravité par la normale de surface touche la physique, la caméra, l'animation et l'IA. | Milestone 6, isolée, sur sa propre map, avant toute IA démon. C'est le brief §12 et c'est le bon découpage. |
-| 4 | **GPL-3** | Le jeu dérivé doit être distribué sous GPL-3, code source compris. | À trancher **maintenant**, pas après. |
+| 4 | ~~GPL-3~~ **Décidé** | La GPL-3 est acceptée. Le jeu sera vendu ; la source du programme dérivé sera publiée, les assets restent à nous. | Voir § 1.4. Reste à faire relire la structure avant la sortie commerciale. |
+| 4b | **Steamworks et GPL** | Lier une bibliothèque propriétaire à un programme GPL demande un examen sérieux. | Milestone dédiée, après audit. Aucune milestone de gameplay n'en dépend. |
 | 5 | **C++ et outils** | Le projet passe de TypeScript à du C++ de 2012, avec `.def`, `.script`, `.mtr`, `.gui` — quatre langages de données à apprendre. | Le découpage en milestones sert à ça : la 2 ne demande qu'un `.def` et un `.map`. |
 | 6 | **Perdre le réglage du ressenti** | Des dizaines de valeurs ont été mesurées à l'image (prise en main, faisceau, plancher de lumière, inertie). Elles ne se transposent pas telles quelles : unités et rendu diffèrent. | `docs/FEEL.md` les consigne avec **la méthode** qui les a produites, pas seulement les nombres. On les retrouve par la même méthode. |
 | 7 | **Les `.glb` sont lourds** | 23 Mo pour le fusil, 6 Mo pour la réglette, avec des normales en 4096². | À la conversion : réduire les textures, garder le maillage. |
 
 ---
 
-## 6. Milestone 1 — le plan exact
+## 6. Les milestones
+
+L'ordre du brief, avec deux ajouts en fin de course.
+
+| # | Contenu |
+| --- | --- |
+| 0 | **Audit** — ce document. |
+| 1 | Compiler et lancer UNHOLY en jeu autonome. |
+| 2 | Migration room et contrôleur joueur. |
+| 3 | Fusil, viewmodel, tir. |
+| 4 | Lampe, éclairage, ombres. |
+| 5 | Possédé au sol. |
+| 6 | Wall / ceiling crawl, sur sa propre map. |
+| 7 | Pounce et combat du possédé. |
+| 8 | Prototype d'un étage. |
+| 9 | Artefact, extraction, règles de partie. |
+| 10 | Bots militaires. |
+| 11 | Bots possédés. |
+| 12 | Immeuble complet. |
+| 13 | Éclairage, audio, finition, optimisation. |
+| **14** | **Audit de licence et intégration Steamworks.** |
+| **15** | **Préparation de la sortie** : publication de la source, page Steam, empaquetage. |
+
+## 7. Milestone 1 — le plan exact
 
 **Objectif : un binaire `unholy` qui démarre sur ta machine, affiche sa console,
 et charge une map vide. Aucun gameplay.**
