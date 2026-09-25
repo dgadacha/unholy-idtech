@@ -1,0 +1,13 @@
+diff --git a/neo/renderer/Font.cpp b/neo/renderer/Font.cpp
+index 91a74c8..9e4a545 100644
+--- a/neo/renderer/Font.cpp
++++ b/neo/renderer/Font.cpp
+@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
+ #pragma hdrstop
+ #include "Font.h"
+ 
+-const char* DEFAULT_FONT = "Arial_Narrow";
++const char* DEFAULT_FONT = "Unholy";
+ 
+ static const float old_scale2 = 0.6f;
+ static const float old_scale1 = 0.3f;

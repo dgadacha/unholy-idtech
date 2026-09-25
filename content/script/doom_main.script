@@ -1,0 +1,16 @@
+/***********************************************************************
+
+	UNHOLY -- script principal
+
+	Le moteur exige ce fichier : il le compile au demarrage, avant toute
+	carte. Il reste vide a dessein. La logique d'UNHOLY vit en C++, dans
+	neo/unholy/, et pas ici : elle est de toute facon sous GPL, autant
+	qu'elle soit la ou la frontiere entre code et donnees est nette.
+
+	Les scripts de Doom 3 livres avec le moteur ne sont pas repris : la
+	publication GPL d'id ne les contenait pas, ils viennent des donnees du
+	jeu.
+
+***********************************************************************/
+
+#include "script/unholy_player.script"

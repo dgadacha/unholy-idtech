@@ -1,0 +1,8 @@
+// Matieres de validation. Aucune donnee du jeu du commerce : la grille est
+// generee par tools/maps/make_test_box.py et sert a lire les echelles.
+
+textures/unholy/test_grid
+{
+	qer_editorimage	textures/unholy/test_grid
+	basecolormap	textures/unholy/test_grid
+}

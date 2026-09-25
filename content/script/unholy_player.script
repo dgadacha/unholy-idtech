@@ -1,0 +1,78 @@
+/***********************************************************************
+
+	UNHOLY -- variables d'etat du joueur
+
+	Le joueur du moteur ecrit a chaque image ces dix-neuf drapeaux dans un
+	objet de script : en marche, accroupi, au sol, en train de recharger.
+	Il les relie au demarrage et s'arrete s'il en manque un
+	(d3xp/Player.cpp, idPlayer::LinkScriptVariables).
+
+	Ce ne sont que des declarations. Aucun comportement : le militaire
+	d'UNHOLY sera ecrit en C++ en milestone 2, et s'il garde ce mecanisme,
+	c'est la liste du C++ qui fait foi, pas celle-ci.
+
+***********************************************************************/
+
+object player_unholy {
+	boolean		AI_FORWARD;
+	boolean		AI_BACKWARD;
+	boolean		AI_STRAFE_LEFT;
+	boolean		AI_STRAFE_RIGHT;
+	boolean		AI_ATTACK_HELD;
+	boolean		AI_WEAPON_FIRED;
+	boolean		AI_JUMP;
+	boolean		AI_DEAD;
+	boolean		AI_CROUCH;
+	boolean		AI_ONGROUND;
+	boolean		AI_ONLADDER;
+	boolean		AI_HARDLANDING;
+	boolean		AI_SOFTLANDING;
+	boolean		AI_RUN;
+	boolean		AI_PAIN;
+	boolean		AI_RELOAD;
+	boolean		AI_TELEPORT;
+	boolean		AI_TURN_LEFT;
+	boolean		AI_TURN_RIGHT;
+
+	// Le moteur exige un constructeur, sous ce nom-la (idScriptObject::
+	// GetConstructor). Il n'a rien a faire.
+	void		init();
+
+	// Les seules fonctions que le joueur du moteur appelle par leur nom
+	// (d3xp/Player.cpp). Vides : l'arme d'UNHOLY sera pilotee en C++.
+	void		RaiseWeapon();
+	void		LowerWeapon();
+	void		ReloadWeapon();
+	void		EnterCinematic();
+	void		ExitCinematic();
+	void		NetCatchup();
+	void		Legs_Death();
+	void		Torso_Death();
+};
+
+void player_unholy::init() {
+}
+
+void player_unholy::RaiseWeapon() {
+}
+
+void player_unholy::LowerWeapon() {
+}
+
+void player_unholy::ReloadWeapon() {
+}
+
+void player_unholy::EnterCinematic() {
+}
+
+void player_unholy::ExitCinematic() {
+}
+
+void player_unholy::NetCatchup() {
+}
+
+void player_unholy::Legs_Death() {
+}
+
+void player_unholy::Torso_Death() {
+}

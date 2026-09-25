@@ -1,0 +1,28 @@
+// Lumieres par defaut.
+//
+// Le rendu les cherche par leur nom (renderer/RenderSystem_init.cpp) pour
+// toute lumiere qui ne declare pas sa propre matiere. Sans image
+// d'attenuation, il plante en eclairant la premiere surface.
+//
+// Projection ronde, eteinte du centre vers le bord ; attenuation le long de
+// l'axe par le carre adouci. Aucune image du jeu du commerce.
+
+lights/defaultPointLight
+{
+	lightFalloffImage	makeIntensity( lights/squarelight1a )
+	{
+		map		lights/unholy_point
+		colored
+		zeroClamp
+	}
+}
+
+lights/defaultProjectedLight
+{
+	lightFalloffImage	makeIntensity( lights/squarelight1a )
+	{
+		map		lights/unholy_point
+		colored
+		zeroClamp
+	}
+}

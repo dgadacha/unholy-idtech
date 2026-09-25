@@ -1,0 +1,93 @@
+Version 3
+// entity 0
+{
+"classname" "worldspawn"
+"def_player" "player_unholy_military"
+// primitive 0
+ {
+  brushDef3
+  {
+   ( 1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 -16 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+// primitive 1
+ {
+  brushDef3
+  {
+   ( 1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 -208 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+// primitive 2
+ {
+  brushDef3
+  {
+   ( 1 0 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+// primitive 3
+ {
+  brushDef3
+  {
+   ( 1 0 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+// primitive 4
+ {
+  brushDef3
+  {
+   ( 1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+// primitive 5
+ {
+  brushDef3
+  {
+   ( 1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 1 0 -272 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 -1 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/unholy/test_grid" 0 0 0
+  }
+ }
+}
+// entity 1
+{
+"classname" "info_player_start"
+"name" "info_player_start_1"
+"origin" "-160 0 1"
+"angle" "0"
+}
+// entity 2
+{
+"classname" "light"
+"name" "light_1"
+"origin" "0 0 168"
+"light_radius" "320 320 220"
+"_color" "1 0.92 0.8"
+}

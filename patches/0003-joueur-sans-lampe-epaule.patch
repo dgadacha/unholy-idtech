@@ -1,0 +1,23 @@
+diff --git a/neo/d3xp/Player.cpp b/neo/d3xp/Player.cpp
+index fa9b89e..6f6300c 100644
+--- a/neo/d3xp/Player.cpp
++++ b/neo/d3xp/Player.cpp
+@@ -1725,9 +1725,15 @@ void idPlayer::SetupWeaponEntity()
+ 		currentWeapon = -1;
+ 
+ 		// flashlight
+-		flashlight = static_cast<idWeapon*>( gameLocal.SpawnEntityType( idWeapon::Type, NULL ) );
+-		flashlight.GetEntity()->SetFlashlightOwner( this );
+-		//FlashlightOff();
++		// UNHOLY: la lampe d'epaule de BFG est une arme a part entiere, qui
++		// suppose sa declaration et son script. Un joueur peut s'en passer :
++		// UpdateFlashlight rend la main des que la lampe n'existe pas.
++		if( !spawnArgs.GetBool( "no_flashlight" ) )
++		{
++			flashlight = static_cast<idWeapon*>( gameLocal.SpawnEntityType( idWeapon::Type, NULL ) );
++			flashlight.GetEntity()->SetFlashlightOwner( this );
++			//FlashlightOff();
++		}
+ 	}
+ 
+ 	for( w = 0; w < MAX_WEAPONS; w++ )

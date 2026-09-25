@@ -1,0 +1,93 @@
+/*
+	UNHOLY -- regles que le code du moteur va chercher par leur nom
+
+	Le module de jeu appelle ces declarations par un nom fixe, dans son code.
+	Sans elles, le joueur ne peut meme pas naitre. Les noms sont donc ceux
+	du moteur ; les valeurs sont celles d'UNHOLY.
+*/
+
+/*
+	Munitions. Une seule arme, une seule munition. L'indice zero est reserve
+	par le moteur a « aucune munition » (d3xp/Weapon.cpp, GetAmmoNumForName).
+*/
+entityDef ammo_types
+{
+	"ammo_none"			"0"
+	"ammo_rifle"		"1"
+}
+
+entityDef ammo_names
+{
+	"ammo_rifle"		"5,56 mm"
+}
+
+// Lue au chargement du jeu, comme les deux precedentes, et vide chez nous.
+entityDef ammo_types_d3xp
+{
+}
+
+/*
+	Degats. Le moteur les inflige de lui-meme dans des situations qu'il
+	connait : chute, ecrasement, noyade, chute mortelle. Un militaire d'UNHOLY
+	n'a qu'une vie ; une chute depuis la cage d'escalier doit donc couter
+	cher, mais une marche ratee ne doit rien couter.
+*/
+entityDef damage_softfall
+{
+	"damage"			"0"
+}
+
+entityDef damage_hardfall
+{
+	"damage"			"20"
+}
+
+entityDef damage_fatalfall
+{
+	"damage"			"1000"
+}
+
+entityDef damage_crush
+{
+	"damage"			"50"
+}
+
+entityDef damage_noair
+{
+	"damage"			"10"
+}
+
+entityDef damage_telefrag
+{
+	"damage"			"1000"
+}
+
+entityDef damage_suicide
+{
+	"damage"			"1000"
+}
+
+entityDef damage_generic
+{
+	"damage"			"10"
+}
+
+entityDef damage_explosion
+{
+	"damage"			"100"
+}
+
+entityDef damage_gib
+{
+	"damage"			"1000"
+}
+
+entityDef damage_triggerhurt_1000
+{
+	"damage"			"1000"
+}
+
+entityDef damage_thrown_ragdoll
+{
+	"damage"			"10"
+}

@@ -1,0 +1,33 @@
+// Matieres que le moteur exige pour demarrer.
+//
+// Elles ne portent aucune image a nous : `_default`, `_white` et `_black`
+// designent des images que le moteur fabrique lui-meme au demarrage. Sans ces
+// declarations, il s'arrete avant d'ouvrir sa console.
+
+// Matiere de repli : toute surface dont la matiere est introuvable la prend.
+_default
+{
+	{
+		map	_default
+	}
+}
+
+_white
+{
+	{
+		map	_white
+	}
+}
+
+_black
+{
+	{
+		map	_black
+	}
+}
+
+// Posee par le moteur sur les surfaces de collision qu'il fabrique a la volee.
+_tracemodel
+{
+	collision
+}

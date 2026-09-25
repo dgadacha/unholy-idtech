@@ -1,0 +1,19 @@
+diff --git a/neo/d3xp/Weapon.cpp b/neo/d3xp/Weapon.cpp
+index e729084..f728f04 100644
+--- a/neo/d3xp/Weapon.cpp
++++ b/neo/d3xp/Weapon.cpp
+@@ -2861,6 +2861,14 @@ void idWeapon::PresentWeapon( bool showViewModel )
+ 
+ 	UpdateSound();
+ 
++	// UNHOLY: un joueur peut n'avoir aucune arme. Le marine de Doom 3 avait
++	// toujours ses poings, si bien que ce chemin ne lisait jamais une arme
++	// sans declaration ; le reste de la fonction gere deja ce cas.
++	if( weaponDef == NULL )
++	{
++		return;
++	}
++
+ 	// constant rumble...
+ 	float highMagnitude = weaponDef->dict.GetFloat( "controllerConstantShakeHighMag" );
+ 	int highDuration = weaponDef->dict.GetInt( "controllerConstantShakeHighTime" );

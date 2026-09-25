@@ -1,0 +1,19 @@
+/***********************************************************************
+
+	UNHOLY -- definitions de base des scripts
+
+	Le module de jeu compile ce fichier avant tout autre script : son nom
+	est fixe dans le code (d3xp/Game.h, SCRIPT_DEFAULTDEFS). Il porte
+	d'ordinaire les constantes qui doivent refleter celles du C++, contenus
+	de collision, directions, axes.
+
+	UNHOLY n'a pas encore de script : ce fichier se remplira le jour ou un
+	script en aura besoin, et chaque constante y sera recopiee depuis le C++,
+	jamais depuis les scripts de Doom 3.
+
+***********************************************************************/
+
+#ifndef __DOOM_DEFS__
+#define __DOOM_DEFS__
+
+#endif

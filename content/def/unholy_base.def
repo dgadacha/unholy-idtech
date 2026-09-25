@@ -1,0 +1,43 @@
+/*
+	UNHOLY -- entites de base
+
+	Chaque entite d'une carte doit avoir ici sa declaration : elle dit quelle
+	classe C++ la fabrique. Sans elle, le moteur refuse jusqu'au monde
+	lui-meme.
+
+	Ecrites a partir du code du moteur, cle par cle, et non des declarations
+	de Doom 3 : on ne garde que ce que la classe lit vraiment.
+*/
+
+entityDef worldspawn
+{
+	"spawnclass"		"idWorldspawn"
+}
+
+entityDef info_player_start
+{
+	"spawnclass"		"idPlayerStart"
+}
+
+entityDef light
+{
+	"spawnclass"		"idLight"
+}
+
+/*
+	Le militaire. La carte le designe par la cle "def_player" de son monde :
+	le moteur ne l'appelle donc jamais par le nom du marine de Doom 3.
+
+	Pas encore d'arme, de modele ni d'interface : la milestone 1 ne demande
+	que de se tenir debout dans une piece.
+*/
+entityDef player_unholy_military
+{
+	"spawnclass"		"idPlayer"
+	"scriptobject"		"player_unholy"
+	"no_Weapons"		"1"
+	// Pas de lampe d'epaule : celle d'UNHOLY est montee sur le fusil.
+	"no_flashlight"		"1"
+	"startingHealth"	"100"
+	"mass"				"100"
+}

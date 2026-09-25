@@ -1,0 +1,43 @@
+diff --git a/neo/framework/Licensee.h b/neo/framework/Licensee.h
+index 7341e1a..7fd5313 100644
+--- a/neo/framework/Licensee.h
++++ b/neo/framework/Licensee.h
+@@ -35,12 +35,13 @@ If you have questions concerning this license or the applicable additional terms
+ ===============================================================================
+ */
+ 
+-#define GAME_NAME						"DOOM 3: BFG Edition"		// appears on window titles and errors
++#define GAME_NAME						"UNHOLY"		// appears on window titles and errors
+ 
+ // RB: changed home folder so we don't break the savegame of the original game
+-#define SAVE_PATH						"\\id Software\\RBDOOM 3 BFG"
++#define SAVE_PATH						"\\UNHOLY"
+ 
+-#define ENGINE_VERSION					"RBDOOM 3 BFG 1.6.0"	// printed in console
++// UNHOLY: le moteur reste nomme, c'est le sien.
++#define ENGINE_VERSION					"UNHOLY 0.1 (RBDOOM 3 BFG 1.6.0)"	// printed in console
+ // RB end
+ 
+ // DG begin
+@@ -66,7 +67,7 @@ If you have questions concerning this license or the applicable additional terms
+ 	#define	BASE_GAMEDIR				"base"
+ #endif
+ 
+-#define CONFIG_FILE						"D3BFGConfig.cfg"
++#define CONFIG_FILE						"unholy.cfg"
+ 
+ // see ASYNC_PROTOCOL_VERSION
+ // use a different major for each game
+diff --git a/neo/sys/posix/posix_main.cpp b/neo/sys/posix/posix_main.cpp
+index 28b27b2..259270c 100644
+--- a/neo/sys/posix/posix_main.cpp
++++ b/neo/sys/posix/posix_main.cpp
+@@ -97,7 +97,7 @@ static char exit_spawn[ 1024 ];
+ const char* Sys_DefaultSavePath()
+ {
+ #if defined(__APPLE__)
+-	char* base_path = SDL_GetPrefPath( "", "RBDOOM-3-BFG" );
++	char* base_path = SDL_GetPrefPath( "", "UNHOLY" );
+ 	if( base_path )
+ 	{
+ 		savepath = base_path;

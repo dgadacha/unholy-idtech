@@ -42,7 +42,12 @@ entre. Pas après.
 
 | Asset | Usage | Licence | Source | Entré en |
 | --- | --- | --- | --- | --- |
-| _(aucun pour l'instant)_ | | | | |
+| Barlow Condensed Medium | Police par défaut du moteur (`newfonts/Unholy`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/barlowcondensed` — licence dans `tools/fontgen/sources/` | M1 |
+| IBM Plex Mono Regular | Jeu de caractères de la console (`bigchars`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/ibmplexmono` — licence dans `tools/fontgen/sources/` | M1 |
+
+La licence OFL impose de livrer le texte de la licence avec la police, et
+interdit de vendre la police seule. Les deux sont respectés tant que le texte
+voyage dans le paquet.
 
 Assets du prototype Three.js à requalifier avant reprise :
 
@@ -52,6 +57,27 @@ Assets du prototype Three.js à requalifier avant reprise :
 | `fluorescent_fixture.glb` | Réglette de plafond | Générée par Meshy AI — conditions du service |
 | `wall/floor/ceiling/glass` | Matières de l'immeuble | Origine et conditions ; à reproduire en PBR complet de toute façon |
 | `logo.png` | Titre | À nous |
+
+## Bibliothèques livrées avec le jeu
+
+| Bibliothèque | Rôle | Licence | Origine |
+| --- | --- | --- | --- |
+| MoltenVK | Vulkan sur Metal | Apache-2.0 | SDK Vulkan de LunarG 1.4.357.1 |
+| Chargeur Vulkan | Vulkan | Apache-2.0 | SDK Vulkan de LunarG |
+| OpenAL Soft | Audio | LGPL-2.0 | Homebrew — lien dynamique, à livrer remplaçable |
+| SDL2 | Fenêtre, entrées | zlib | Homebrew (`sdl2-compat`) |
+
+Outils de construction, non livrés : DXC (compilateur de shaders, NCSA), ispc,
+CMake. OpenAL Soft est sous LGPL : il doit rester une bibliothèque dynamique
+que l'utilisateur peut remplacer, ce qui est le cas aujourd'hui.
+
+## Contenu écrit ou généré pour la milestone 1
+
+Tout ce qui est dans `content/` est à nous : écrit à la main (déclarations,
+matières, scripts, commandes) ou généré par nos outils (police, lumières,
+grille de test). Rien n'est repris du `base/` livré avec le moteur, dont les
+`.def` et `.script` sont ceux de Doom 3 et ne font pas partie de la publication
+GPL d'id.
 
 ## Interdits
 

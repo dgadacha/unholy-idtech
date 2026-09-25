@@ -1,0 +1,13 @@
+build/
+.DS_Store
+
+# Shaders compiles par le moteur : content/renderprogs2 pointe dessus.
+content/renderprogs2
+
+# Sorties de dmap, regenerees a chaque compilation de carte.
+content/maps/*.proc
+content/maps/*.cm
+content/maps/*.aas*
+
+# Caches du moteur : images et cartes converties au premier chargement.
+content/generated/
