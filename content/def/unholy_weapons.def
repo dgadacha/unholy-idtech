@@ -1,10 +1,12 @@
 /*
 	UNHOLY -- le fusil du militaire
 
-	Une carabine a canon court, tenue par des bras animes. Le modele et ses
-	animations viennent du Retro Weapon Pack, convertis sur place par
-	tools/assets/build_retro_weapons.sh (ils ne sont pas dans le depot) ; ces
-	declarations sont a nous.
+	Un fusil de type HK416 (sans marquage), tenu par des bras animes. Le
+	fusil, les bras et le rechargement sont a nous, modelises, textures et
+	animes par nos scripts (tools/assets/hd/) ; les autres animations et le
+	squelette des bras viennent du Retro Weapon Pack.
+	tools/assets/build_hd_weapons.sh assemble le tout sur place : le modele
+	anime n'est pas dans le depot. Ces declarations sont a nous.
 
 	L'arme du moteur (idWeapon) fait tout le travail : le modele a l'oeil, les
 	animations, le chargeur, les projectiles, l'eclat et sa lumiere, le recul
@@ -13,33 +15,31 @@
 
 /*
 	Les animations, a 24 images par seconde comme le pack. Les sons du
-	rechargement tombent sur les images ou le chargeur quitte le fusil et y
-	revient, puis ou le levier d'armement part et claque : ces images ont ete
-	relevees sur les os du chargeur et du levier.
+	rechargement tombent sur les images ou le chargeur quitte le puits (1,2 s)
+	et y claque (2,4 s), relevees dans tools/assets/hd/reload.py. Rechargement
+	tactique : la culasse n'est pas touchee.
 */
 model viewmodel_unholy_rifle
 {
-	mesh						models/retro/rifle_view.glb
+	mesh						models/hd/rifle_view.glb
 
-	anim idle					models/retro/rifle_view.idle.glb
-	anim walk					models/retro/rifle_view.walk.glb
-	anim run					models/retro/rifle_view.run.glb
-	anim crouch_idle			models/retro/rifle_view.crouch_idle.glb
-	anim crouch_walk			models/retro/rifle_view.crouch_walk.glb
-	anim aim_in					models/retro/rifle_view.aim_in.glb
-	anim aim_idle				models/retro/rifle_view.aim_idle.glb
-	anim aim_walk				models/retro/rifle_view.aim_walk.glb
-	anim aim_out				models/retro/rifle_view.aim_out.glb
-	anim aim_fire				models/retro/rifle_view.aim_fire.glb
-	anim fire					models/retro/rifle_view.fire.glb
-	anim raise					models/retro/rifle_view.raise.glb
-	anim putaway				models/retro/rifle_view.putaway.glb
-	anim reload					models/retro/rifle_view.reload.glb
+	anim idle					models/hd/rifle_view.idle.glb
+	anim walk					models/hd/rifle_view.walk.glb
+	anim run					models/hd/rifle_view.run.glb
+	anim crouch_idle			models/hd/rifle_view.crouch_idle.glb
+	anim crouch_walk			models/hd/rifle_view.crouch_walk.glb
+	anim aim_in					models/hd/rifle_view.aim_in.glb
+	anim aim_idle				models/hd/rifle_view.aim_idle.glb
+	anim aim_walk				models/hd/rifle_view.aim_walk.glb
+	anim aim_out				models/hd/rifle_view.aim_out.glb
+	anim aim_fire				models/hd/rifle_view.aim_fire.glb
+	anim fire					models/hd/rifle_view.fire.glb
+	anim raise					models/hd/rifle_view.raise.glb
+	anim putaway				models/hd/rifle_view.putaway.glb
+	anim reload					models/hd/rifle_view.reload.glb
 	{
-		frame 14				sound_weapon unholy_rifle_magout
-		frame 36				sound_weapon unholy_rifle_magin
-		frame 55				sound_weapon unholy_rifle_chargepull
-		frame 64				sound_weapon unholy_rifle_chargerelease
+		frame 30				sound_weapon unholy_rifle_magout
+		frame 58				sound_weapon unholy_rifle_magin
 	}
 }
 

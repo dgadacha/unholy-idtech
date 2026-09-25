@@ -1,0 +1,49 @@
+/*
+	UNHOLY -- matieres du fusil HD
+
+	Le fusil est modelise et ses matieres cuites par nos scripts
+	(tools/assets/hd/, voir build_hd_weapons.sh) : deux atlas, les metaux et les
+	polymeres, chacun en trois images. Couleur ; relief ; et rugosite, metal,
+	occlusion dans les canaux rouge, vert, bleu d'une meme image, que le rendu
+	reconnait au suffixe _rmao de son nom.
+*/
+
+models/unholy/fusil_metal
+{
+	metal
+	basecolormap	textures/unholy/fusil/fusil_metal_basecolor
+	normalmap		textures/unholy/fusil/fusil_metal_normal
+	rmaomap			textures/unholy/fusil/fusil_metal_rmao
+}
+
+models/unholy/fusil_polymere
+{
+	plastic
+	basecolormap	textures/unholy/fusil/fusil_polymere_basecolor
+	normalmap		textures/unholy/fusil/fusil_polymere_normal
+	rmaomap			textures/unholy/fusil/fusil_polymere_rmao
+}
+
+// Le verre de la lampe : presque rien, un voile teinte.
+models/unholy/fusil_verre
+{
+	glass
+	translucent
+	noShadows
+	{
+		blend	blend
+		map		_white
+		red		0.75
+		green	0.85
+		blue	0.8
+		alpha	0.08
+	}
+}
+
+// Les bras : manches de treillis et gants, sur le squelette des bras du pack.
+models/unholy/bras
+{
+	basecolormap	textures/unholy/fusil/bras_basecolor
+	normalmap		textures/unholy/fusil/bras_normal
+	rmaomap			textures/unholy/fusil/bras_rmao
+}

@@ -47,9 +47,39 @@ Sept secondes. Le script ouvre dans Blender, sans fenêtre, la scène animée de
 bras et du fusil, rejoue chaque animation image par image, réunit les deux
 squelettes en un seul, passe des centimètres aux pouces et exporte un glTF
 que le moteur lit tel quel. Il dépose le résultat dans `content/models/retro`
-et `content/textures/retro`, deux dossiers ignorés par git. Sans eux, le jeu
-démarre, mais le militaire n'a pas d'arme à la main. On le relance après avoir
-changé `tools/assets/`.
+et `content/textures/retro`, deux dossiers ignorés par git.
+
+Le fusil du jeu n'est plus celui du pack mais le nôtre, un HK416 modélisé,
+texturé et rechargé par script (`tools/assets/hd/`), porté par les autres
+animations du pack :
+
+```bash
+tools/assets/build_hd_weapons.sh ~/Downloads/RetroWeaponPack_V1.zip
+```
+
+Le script convertit d'abord le pack (ci-dessus), puis construit le fusil et
+les bras HD dans la scène du pack, les déplie et cuit leurs textures avec
+Cycles sur la puce graphique, et exporte le modèle animé dans
+`content/models/hd/`, ses textures dans `content/textures/unholy/fusil/`,
+deux dossiers ignorés par git. Sans eux, le jeu démarre, mais le militaire
+n'a pas d'arme à la main. On le relance après avoir changé `tools/assets/`.
+
+Pour juger le fusil sans le moteur, des aperçus rendus par Cycles (vues de
+studio, vue du joueur à la hanche et épaulé, et une vue calée au pixel sur
+la photo de référence) :
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender -b \
+  build/assets/retro/Assets/RetroWeaponsPack/FP_Arms/BlendFiles/FP_Arms_Rifle_01_Anims.blend \
+  --python tools/assets/hd/preview.py -- build/assets/hd/preview reference fps epaule
+```
+
+La vue `reference` a le cadrage et l'échelle de la photo de profil (voir
+`trace.py`) : superposée à elle, elle montre au pixel où le modèle s'en
+écarte. Le rechargement (`reload.py`) se règle par ses tables de poses
+clefs ; `preview.py` enregistre sa scène dans le dossier des aperçus
+(`fusil_hd.blend`), où l'on peut rejouer l'action `Arms_Reload_HK` /
+`Rifle_Reload_HK` après `reload.make()`.
 
 ## À chaque fois
 

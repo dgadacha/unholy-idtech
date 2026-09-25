@@ -19,3 +19,8 @@ __pycache__/
 # tools/assets/build_retro_weapons.sh : le pack ne se redistribue pas.
 content/models/retro/
 content/textures/retro/
+
+# Le fusil HD : le modele anime porte les animations du pack, et ses textures
+# cuites se refont a l'identique (tools/assets/build_hd_weapons.sh).
+content/models/hd/
+content/textures/unholy/fusil/

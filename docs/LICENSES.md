@@ -106,11 +106,35 @@ dossiers `retro/`, modèles et textures, ne sont pas versionnés et ne sont pas
 | Cartes `test_box`, `migration_room`, `move_test` | `tools/maps/` | M1, M2 |
 | Cible d'entraînement, trou de balle | `tools/textures/make_dev_textures.py` | M3 |
 | Sons du fusil, des impacts et de la cible | `tools/sounds/make_weapon_sounds.py`, synthèse à graine fixe | M3 |
+| Fusil HD (type HK416, organes de visée métalliques, lampe), ses matières | `tools/assets/hd/rifle.py`, `materials.py`, cuites par `build_rifle.py` | M4 |
+| Contours du fusil (crosse, poignée, chargeur, boîtiers, garde-main, guidon) | `tools/assets/hd/trace.py`, relevés sur une photo de profil fournie par l'équipe | M4 |
+| Bras HD (manches, gants) | `tools/assets/hd/arms.py`, sur le maillage des bras du Retro Weapon Pack | M4 |
+| Animation de rechargement du fusil | `tools/assets/hd/reload.py`, écrite pose par pose d'après une vidéo de référence | M4 |
 | Comportement du fusil, événements du moteur déclarés pour les scripts | `content/script/`, écrits à la main | M3 |
 | Tables de sinus et de cosinus que demande `rotate` | `content/materials/engine.mtr`, calculées | M3 |
 
 Les teintes des textures de développement sont celles arrêtées pour l'immeuble
 du prototype : des valeurs, pas des images reprises.
+
+**Le fusil HD** est modélisé par nos scripts, pièce par pièce. Ses formes
+libres suivent des contours relevés sur une photo de profil d'un fusil réel
+(un HK416 A5) : la photo n'entre pas dans le dépôt, seuls les contours en
+centimètres. Le fusil ne porte aucun marquage, ni logo, ni gravure de
+fabricant, ni chiffres sur les rails, et le jeu ne le nomme pas par sa
+marque : « HK416 » est une marque de son fabricant, le nom affiché reste
+générique (`display_name` : « Carabine »).
+
+**Le rechargement** est notre animation : ses poses et son minutage sont
+relevés image par image sur une vidéo publique d'un rechargement de HK416
+(le geste, pas l'image : rien de la vidéo n'entre dans le dépôt ni dans le
+jeu), puis écrits dans `reload.py` et posés sur les squelettes du pack.
+
+Ce qui vient du Retro Weapon Pack reste dans ses conditions : les autres
+animations, les squelettes, et le maillage de base des bras, que `arms.py`
+subdivise et rhabille. Le modèle animé (`content/models/hd/`) et les textures
+cuites (`content/textures/unholy/fusil/`) sont produits sur place et ne sont
+pas versionnés : le premier porte les animations du pack, les secondes se
+refont à l'identique.
 
 ## Interdits
 

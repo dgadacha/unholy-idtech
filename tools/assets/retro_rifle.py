@@ -3,7 +3,11 @@ Retro Weapon Pack -> id Tech 4 : le fusil et les bras, en un seul modele anime.
 
 Lance dans Blender sans interface par tools/assets/build_retro_weapons.sh :
 
-    blender -b FP_Arms_Rifle_01_Anims.blend --python retro_rifle.py -- sortie.glb
+    blender -b FP_Arms_Rifle_01_Anims.blend --python retro_rifle.py -- sortie.glb [--fusil-hd fusil_hd.blend]
+
+Avec --fusil-hd (tools/assets/build_hd_weapons.sh), le fusil et les bras HD
+remplacent ceux du pack, la main gauche descend a la hauteur du garde-main HD,
+et notre rechargement (tools/assets/hd/reload.py) remplace celui du pack.
 
 Le pack est fait pour Unity et Unreal : deux squelettes, les bras (63 os) et le
 fusil (9 os), chacun ses animations, et les mains accrochees au fusil par
@@ -20,6 +24,7 @@ son auteur l'a cadree. Le pack compte en centimetres ; le modele sort en
 pouces, l'unite du moteur, et se charge donc sans option d'echelle.
 """
 
+import os
 import sys
 
 import bpy
@@ -119,16 +124,17 @@ def rest_mesh(source, depsgraph):
     return mesh
 
 
-def muzzle_and_axis(mesh, rear_sight, front_sight):
+def muzzle_and_axis(meshes, rear_sight, front_sight):
     """
     Le bout du canon : les sommets les plus en avant le long de l'axe du fusil,
     pris de la hausse vers le guidon. La moyenne des derniers millimetres donne
     l'ame du canon, pas le haut du guidon.
     """
     forward = (front_sight - rear_sight).normalized()
-    along = [v.co.dot(forward) for v in mesh.vertices]
+    points = [v.co for mesh in meshes for v in mesh.vertices]
+    along = [co.dot(forward) for co in points]
     tip = max(along)
-    front = [v.co for v, a in zip(mesh.vertices, along) if a > tip - 1.0]
+    front = [co for co, a in zip(points, along) if a > tip - 1.0]
     center = sum(front, Vector()) / len(front)
     return center, forward
 
@@ -144,13 +150,66 @@ def frame_matrix(origin, forward):
     return m
 
 
+def load_hd(path, collection_name, rig, keep_world=False):
+    """
+    Des pieces HD (tools/assets/hd/build_rifle.py), a la place de celles du pack :
+    elles arrivent posees sur une copie de leur squelette, on les rattache au
+    squelette de la scene, dans le meme repere. Rend [] si le fichier n'a pas la
+    collection.
+    """
+    with bpy.data.libraries.load(path, link=False) as (src, dst):
+        dst.collections = [name for name in src.collections if name == collection_name]
+    if not dst.collections:
+        return []
+    collection = dst.collections[0]
+    bpy.context.scene.collection.children.link(collection)
+    parts = list(collection.objects)
+    copies = {obj.parent for obj in parts if obj.parent is not None and obj.parent != rig}
+    for obj in parts:
+        obj.parent = rig
+        obj.matrix_parent_inverse = rig.matrix_world.inverted() if keep_world else Matrix.Identity(4)
+        for mod in obj.modifiers:
+            if mod.type == 'ARMATURE':
+                mod.object = rig
+    for copy in copies:
+        if copy.name in bpy.data.objects:
+            bpy.data.objects.remove(copy, do_unlink=True)
+    return parts
+
+
 def main():
-    out = sys.argv[sys.argv.index('--') + 1]
+    args = sys.argv[sys.argv.index('--') + 1:]
+    out = args[0]
+    hd_path = args[args.index('--fusil-hd') + 1] if '--fusil-hd' in args else None
     scene = bpy.context.scene
     arms = bpy.data.objects[ARMS_ARMATURE]
     rifle = bpy.data.objects[RIFLE_ARMATURE]
     arms_mesh = bpy.data.objects[ARMS_MESH]
-    rifle_mesh = bpy.data.objects[RIFLE_MESH]
+    anims = list(ANIMS)
+    if hd_path:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hd'))
+        import arms as hd_arms  # noqa: E402
+        import reload as hd_reload  # noqa: E402
+        import rifle as hd_rifle  # noqa: E402
+
+        # La main gauche a la hauteur du garde-main HD, dans toutes les animations ; et
+        # notre rechargement a la place de celui du pack.
+        set_actions(arms, rifle, 'Arms_BasePose', 'Rifle_BasePose')
+        scene.frame_set(1)
+        hd_arms.drop_left_hand(arms, rifle, hd_rifle.GRIP_DROP)
+        hd_reload.make(arms, rifle)
+        anims = [(name, hd_reload.ARMS_ACTION, hd_reload.RIFLE_ACTION) if name == 'reload' else (name, a, r) for name, a, r in anims]
+
+        # Le fusil HD remplace celui du pack, qui ne sera pas exporte ; les bras HD,
+        # s'ils y sont, remplacent ceux du pack (memes os, memes poids).
+        rifle_parts = load_hd(hd_path, 'fusil_hd', rifle)
+        bpy.data.objects[RIFLE_MESH].hide_viewport = True
+        arm_parts = load_hd(hd_path, 'bras_hd', arms, keep_world=True)
+        if arm_parts:
+            arms_mesh = arm_parts[0]
+        print(f'fusil HD : {len(rifle_parts)} pieces, bras HD : {"oui" if arm_parts else "non"}')
+    else:
+        rifle_parts = [bpy.data.objects[RIFLE_MESH]]
 
     # La pose de reference, celle ou les maillages sont lies aux os.
     set_actions(arms, rifle, 'Arms_BasePose', 'Rifle_BasePose')
@@ -189,17 +248,24 @@ def main():
         rest[name] = engine(evaluated.matrix_world @ obj.data.bones[name].matrix_local)
 
     arms_rest = rest_mesh(arms_mesh, depsgraph)
-    rifle_rest = rest_mesh(rifle_mesh, depsgraph)
-    for mesh in (arms_rest, rifle_rest):
+    rifle_rests = [rest_mesh(part, depsgraph) for part in rifle_parts]
+    for mesh in [arms_rest] + rifle_rests:
         mesh.transform(Matrix.Scale(INCH_PER_CM, 4))
 
-    # Les trois os du moteur, fixes sur le corps du fusil.
+    # Les os du moteur, fixes sur le corps du fusil : le canon, l'eclat, l'ejection,
+    # et, sur le fusil HD, la lampe.
     rear = rest['RearSight'].translation
     front = rest['FrontSight'].translation
-    muzzle, forward = muzzle_and_axis(rifle_rest, rear, front)
+    muzzle, forward = muzzle_and_axis(rifle_rests, rear, front)
     barrel = frame_matrix(muzzle, forward)
     eject = frame_matrix(rest['EjectionCover'].translation, forward)
-    for name, matrix in (('barrel', barrel), ('flash', barrel), ('eject', eject)):
+    extra = [('barrel', barrel), ('flash', barrel), ('eject', eject)]
+    if hd_path:
+        # Les cotes de la lampe, dans le repere du fusil.
+        lamp_local = Vector((hd_rifle.LAMP_X1, hd_rifle.LAMP_Y, hd_rifle.LAMP_Z))
+        lamp_world = rifle.evaluated_get(depsgraph).matrix_world @ lamp_local
+        extra.append(('lamp', frame_matrix(lamp_world * INCH_PER_CM, forward)))
+    for name, matrix in extra:
         rest[name] = matrix
         parents[name] = 'Main'
 
@@ -222,11 +288,12 @@ def main():
     bpy.ops.object.mode_set(mode='OBJECT')
 
     meshes = []
-    for source_mesh, mesh in ((arms_mesh, arms_rest), (rifle_mesh, rifle_rest)):
+    for source_mesh, mesh in [(arms_mesh, arms_rest)] + list(zip(rifle_parts, rifle_rests)):
         for index, material in enumerate(mesh.materials):
             if material is None:
                 continue
-            target = MATERIALS[material.name]
+            # Les matieres du fusil HD portent deja le nom de leur declaration.
+            target = MATERIALS.get(material.name, material.name)
             mesh.materials[index] = bpy.data.materials.get(target) or bpy.data.materials.new(target)
         obj = bpy.data.objects.new(f'{OUTPUT_NAME}_{source_mesh.name}', mesh)
         scene.collection.objects.link(obj)
@@ -267,7 +334,7 @@ def main():
         parent = parents[name]
         local_rest[name] = rest[name] if parent is None else rest[parent].inverted() @ rest[name]
 
-    for anim, arms_action, rifle_action in ANIMS:
+    for anim, arms_action, rifle_action in anims:
         set_actions(arms, rifle, arms_action, rifle_action)
         last = max(action_end(arms_action), action_end(rifle_action))
         action = bpy.data.actions.new(anim)
@@ -303,7 +370,7 @@ def main():
 
     # Les actions du pack s'appliqueraient aussi a notre squelette, les noms
     # d'os etant les memes : l'exporteur les emporterait. Elles ont servi.
-    ours = {anim for anim, _, _ in ANIMS}
+    ours = {anim for anim, _, _ in anims}
     for action in list(bpy.data.actions):
         if action.name not in ours:
             bpy.data.actions.remove(action)
@@ -332,7 +399,7 @@ def main():
         export_anim_single_armature=True,
     )
     root_scale_only(out)
-    print(f'{out} : {len(order)} os, {len(ANIMS)} animations')
+    print(f'{out} : {len(order)} os, {len(anims)} animations')
 
 
 def root_scale_only(path):

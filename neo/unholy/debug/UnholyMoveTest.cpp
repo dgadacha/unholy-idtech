@@ -117,7 +117,7 @@ static const unholyMoveStep_t fireSteps[] =
 	{ "arme prete",	1500,	0,		0,		0,								0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
 	{ "rafale",		1500,	0,		0,		BUTTON_ATTACK,					0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
 	{ "epaule",		1200,	0,		0,		BUTTON_ZOOM | BUTTON_ATTACK,	0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
-	{ "recharge",	4200,	0,		0,		0,								0,	0.0f,	REPORT_AMMO,	IMPULSE_RELOAD,	FIRE_PITCH },
+	{ "recharge",	5000,	0,		0,		0,								0,	0.0f,	REPORT_AMMO,	IMPULSE_RELOAD,	FIRE_PITCH },
 };
 
 #define SCENARIO( name, description, steps ) { name, description, steps, sizeof( steps ) / sizeof( steps[0] ) }
