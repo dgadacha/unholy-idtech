@@ -1,0 +1,36 @@
+/*
+	UNHOLY -- matieres d'edition
+
+	Elles ne se dessinent jamais en jeu : elles disent au compilateur de
+	cartes comment decouper le monde.
+
+	Attention : un mot que le moteur ne connait pas fait rejeter la matiere
+	entiere, qui retombe sur la matiere par defaut, sans autre signe qu'un
+	avertissement. qer_trans, courant chez Doom 3, en est un.
+*/
+
+/*
+	Portail de visibilite. Un brush qui bouche une embrasure de porte, toutes
+	ses faces de cette matiere, coupe la carte en deux zones : le moteur ne
+	dessine l'une que si on la voit a travers le portail, et une porte fermee
+	le ferme, ce qui coupe aussi le son.
+*/
+textures/unholy/editor/visportal
+{
+	qer_editorimage	textures/unholy/dev/visportal
+	areaportal
+	noshadows
+}
+
+/*
+	Rien : ni dessin, ni collision, ni ombre. Pour les faces d'un brush
+	d'edition qui ne doivent rien faire, comme les cotes d'un portail : un
+	portail ne veut sa matiere que sur une face, sinon le compilateur en
+	jette une et le signale.
+*/
+textures/unholy/editor/nodraw
+{
+	qer_editorimage	textures/unholy/dev/visportal
+	nonsolid
+	noshadows
+}

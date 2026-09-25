@@ -1,0 +1,359 @@
+Version 3
+// entity 0
+{
+"classname" "worldspawn"
+"def_player" "player_unholy_military"
+// primitive 0
+ {
+  brushDef3
+  {
+   ( 1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+   ( -1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+   ( 0 1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+   ( 0 -1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+   ( 0 0 1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+   ( 0 0 -1 -16 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/floor" 0 0 0
+  }
+ }
+// primitive 1
+ {
+  brushDef3
+  {
+   ( 1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+   ( -1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+   ( 0 1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+   ( 0 -1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+   ( 0 0 1 -272 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+   ( 0 0 -1 256 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/ceiling" 0 0 0
+  }
+ }
+// primitive 2
+ {
+  brushDef3
+  {
+   ( 1 0 0 1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -256 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 3
+ {
+  brushDef3
+  {
+   ( 1 0 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -256 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 4
+ {
+  brushDef3
+  {
+   ( 1 0 0 -1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 -1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -256 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 5
+ {
+  brushDef3
+  {
+   ( 1 0 0 -1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 -1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 -1296 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 1280 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -256 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 6
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 509 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -520 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -7 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 7
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 498 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -509 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -14 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 8
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 487 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -498 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -21 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 9
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 476 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -487 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -28 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 10
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 465 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -476 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -35 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 11
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 454 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -465 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -42 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 12
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 443 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -454 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -49 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 13
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 432 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -443 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -56 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 14
+ {
+  brushDef3
+  {
+   ( 1 0 0 1104 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 336 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -432 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -56 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 15
+ {
+  brushDef3
+  {
+   ( 1 0 0 1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -10 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 16
+ {
+  brushDef3
+  {
+   ( 1 0 0 1040 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1088 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -18 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 17
+ {
+  brushDef3
+  {
+   ( 1 0 0 928 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -976 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 -200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -26 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 18
+ {
+  brushDef3
+  {
+   ( 1 0 0 1200 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 -1208 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 -248 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 120 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -56 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 19
+ {
+  brushDef3
+  {
+   ( 1 0 0 1144 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( -1 0 0 -1152 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 1 0 -248 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 -1 0 120 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 1 -56 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/wall" 0 0 0
+  }
+ }
+// primitive 20
+ {
+  brushDef3
+  {
+   ( 1 0 0 1144 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( -1 0 0 -1208 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 -248 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 120 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 1 -72 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 56 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 21
+ {
+  brushDef3
+  {
+   ( -0.5 0 0.866025 -600 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 1 0 0 1116.86 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 -504 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 440 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+// primitive 22
+ {
+  brushDef3
+  {
+   ( -0.766044 0 0.642788 -919.253 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 1 0 0 1159.72 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 1 0 -624 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 -1 0 560 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/block" 0 0 0
+  }
+ }
+}
+// entity 1
+{
+"classname" "light"
+"name" "light_00"
+"origin" "-853.333 -853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 2
+{
+"classname" "light"
+"name" "light_01"
+"origin" "-853.333 0 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 3
+{
+"classname" "light"
+"name" "light_02"
+"origin" "-853.333 853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 4
+{
+"classname" "light"
+"name" "light_10"
+"origin" "0 -853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 5
+{
+"classname" "light"
+"name" "light_11"
+"origin" "0 0 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 6
+{
+"classname" "light"
+"name" "light_12"
+"origin" "0 853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 7
+{
+"classname" "light"
+"name" "light_20"
+"origin" "853.333 -853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 8
+{
+"classname" "light"
+"name" "light_21"
+"origin" "853.333 0 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 9
+{
+"classname" "light"
+"name" "light_22"
+"origin" "853.333 853.333 240"
+"light_radius" "640 640 280"
+"_color" "0.9 0.9 0.88"
+}
+// entity 10
+{
+"classname" "info_player_start"
+"name" "start_military"
+"origin" "-300 -600 1"
+"angle" "0"
+}

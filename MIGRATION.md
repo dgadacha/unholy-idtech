@@ -236,9 +236,15 @@ Deux chemins :
    Une centaine de lignes de TypeScript, jetables après usage.
 
 Le second chemin donne l'immeuble entier en une fois et garde le plan vérifié
-par les essais. Recommandé — mais pas avant la milestone 8 : la migration room
-de la milestone 2 se fait à la main dans TrenchBroom, c'est plus rapide et ça
-sert à apprendre l'outil.
+par les essais. Recommandé, mais pas avant la milestone 8.
+
+*Milestone 2* : la migration room n'a finalement pas été faite à la main mais
+écrite par un script (`tools/maps/make_migration_room.py`, sur un petit
+atelier de brushes, `tools/maps/mapkit.py`), comme l'aire d'essai
+`move_test`. Les cotes restent lisibles et la carte se régénère à
+l'identique. Le fichier produit est un `.map` que TrenchBroomBFG ouvre, mais
+l'éditeur n'est pas encore configuré pour UNHOLY (déclarations d'entités,
+dossier des textures) : c'est un préalable au travail à la main.
 
 ---
 
@@ -270,7 +276,9 @@ unholy-idtech/
 │       │   └── UnholyExtraction.cpp/.h
 │       └── physics/
 │           └── UnholySurfaceWalk.cpp/.h   wall/ceiling crawl
-├── base/                      données du jeu, aucune donnée de Doom 3
+├── content/                   données du jeu, aucune donnée de Doom 3
+│                              (le mode autonome du moteur lit content/,
+│                               pas base/)
 │   ├── def/                   entités, armes, personnages
 │   ├── maps/                  migration_room, demon_movement_test, immeuble
 │   ├── materials/             .mtr
@@ -289,8 +297,14 @@ unholy-idtech/
 ```
 
 Règle : `engine/` ne bouge pas. Tout ce qui est à nous est dans `neo/unholy/`
-et `base/`. On doit pouvoir répondre à « qu'est-ce que j'ai modifié du
+et `content/`. On doit pouvoir répondre à « qu'est-ce que j'ai modifié du
 moteur ? » en listant `patches/`.
+
+État à la milestone 2 : `neo/unholy/player/UnholyPlayer` (le militaire) et
+`neo/unholy/debug/UnholyMoveTest` (le banc d'essai du déplacement). Le reste de
+l'arbre arrive avec les milestones qui en ont besoin ; le militaire n'a pas
+encore de classe à lui, `UnholyPlayer` en tient lieu jusqu'à l'arrivée du
+possédé.
 
 ---
 
@@ -315,24 +329,24 @@ Par ordre de ce qui peut arrêter le projet.
 
 L'ordre du brief, avec deux ajouts en fin de course.
 
-| # | Contenu |
-| --- | --- |
-| 0 | **Audit** — ce document. |
-| 1 | Compiler et lancer UNHOLY en jeu autonome. |
-| 2 | Migration room et contrôleur joueur. |
-| 3 | Fusil, viewmodel, tir. |
-| 4 | Lampe, éclairage, ombres. |
-| 5 | Possédé au sol. |
-| 6 | Wall / ceiling crawl, sur sa propre map. |
-| 7 | Pounce et combat du possédé. |
-| 8 | Prototype d'un étage. |
-| 9 | Artefact, extraction, règles de partie. |
-| 10 | Bots militaires. |
-| 11 | Bots possédés. |
-| 12 | Immeuble complet. |
-| 13 | Éclairage, audio, finition, optimisation. |
-| **14** | **Audit de licence et intégration Steamworks.** |
-| **15** | **Préparation de la sortie** : publication de la source, page Steam, empaquetage. |
+| # | Contenu | État |
+| --- | --- | --- |
+| 0 | **Audit** — ce document. | fait |
+| 1 | Compiler et lancer UNHOLY en jeu autonome. | fait |
+| 2 | Migration room et contrôleur joueur. | fait |
+| 3 | Fusil, viewmodel, tir. | |
+| 4 | Lampe, éclairage, ombres. | |
+| 5 | Possédé au sol. | |
+| 6 | Wall / ceiling crawl, sur sa propre map. | |
+| 7 | Pounce et combat du possédé. | |
+| 8 | Prototype d'un étage. | |
+| 9 | Artefact, extraction, règles de partie. | |
+| 10 | Bots militaires. | |
+| 11 | Bots possédés. | |
+| 12 | Immeuble complet. | |
+| 13 | Éclairage, audio, finition, optimisation. | |
+| **14** | **Audit de licence et intégration Steamworks.** | |
+| **15** | **Préparation de la sortie** : publication de la source, page Steam, empaquetage. | |
 
 ## 7. Milestone 1 — le plan exact
 

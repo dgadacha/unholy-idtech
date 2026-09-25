@@ -25,19 +25,82 @@ entityDef light
 }
 
 /*
+	Porte coulissante : le vantail rentre dans le mur. C'est la porte que le
+	moteur sait faire ; les portes battantes de l'immeuble viendront avec les
+	etages. Elle s'ouvre a l'approche, et referme son portail de visibilite
+	en se fermant.
+*/
+entityDef func_door
+{
+	"spawnclass"		"idDoor"
+}
+
+/*
 	Le militaire. La carte le designe par la cle "def_player" de son monde :
 	le moteur ne l'appelle donc jamais par le nom du marine de Doom 3.
 
-	Pas encore d'arme, de modele ni d'interface : la milestone 1 ne demande
-	que de se tenir debout dans une piece.
+	Pas encore d'arme ni de modele : le fusil arrive avec la milestone 3, la
+	lampe avec la 4.
 */
 entityDef player_unholy_military
 {
-	"spawnclass"		"idPlayer"
+	"spawnclass"		"UnholyPlayer"
 	"scriptobject"		"player_unholy"
 	"no_Weapons"		"1"
 	// Pas de lampe d'epaule : celle d'UNHOLY est montee sur le fusil.
 	"no_flashlight"		"1"
 	"startingHealth"	"100"
 	"mass"				"100"
+
+	/*
+		Deplacement. Chaque cle pm_ regle la variable du meme nom a
+		l'apparition du militaire : on essaie une valeur a la console, on la
+		reporte ici. Une unite vaut un pouce, 2,54 cm. Entre parentheses, la
+		valeur du moteur.
+
+		Le militaire est lourd, precis, et bien plus lent qu'un joueur
+		d'arene : il met un tiers de seconde a prendre son allure et s'arrete
+		net. Les chiffres mesures sont dans docs/FEEL.md.
+	*/
+
+	// allures
+	"pm_walkspeed"			"125"		// 3,2 m/s, le pas d'une progression (140)
+	"pm_runspeed"			"210"		// 5,3 m/s (220)
+	"pm_crouchspeed"		"65"		// 1,65 m/s (80)
+	"pm_sprintforwardonly"	"1"			// on ne court qu'en avancant (0)
+
+	// endurance : six secondes de course pleine, deux pour retomber au pas,
+	// dix pour la retrouver en marchant, huit sans bouger
+	"pm_stamina"			"8"			// (24)
+	"pm_staminathreshold"	"2"			// (45)
+	"pm_staminarate"		"0.8"		// (0.75)
+
+	// prise d'allure et arret
+	"pm_accelmode"			"1"			// la vitesse suit la direction voulue sans jamais la depasser (0)
+	"pm_accelerate"			"8"			// (10)
+	"pm_friction"			"7.5"		// (6)
+	"pm_stopspeed"			"50"		// (100)
+	"pm_airaccelerate"		"0.5"		// presque rien a corriger en l'air (1)
+
+	// saut
+	"pm_jumpheight"			"20"		// 50 cm (48)
+	"pm_jumpdelay"			"400"		// ms au sol avant de ressauter (0)
+	"pm_landspeedscale"		"0.7"		// la vitesse qui reste a la reception (1)
+	"pm_stepsize"			"12"		// 30 cm : une marche, pas un meuble (16)
+
+	// gabarit : 1,83 m, les yeux a 1,68 m ; accroupi 1,22 m, les yeux a 1,07 m
+	"pm_normalheight"		"72"		// (74)
+	"pm_normalviewheight"	"66"		// (68)
+	"pm_crouchheight"		"48"		// (38)
+	"pm_crouchviewheight"	"42"		// (32)
+
+	// balancement de la vue : le pas se sent, il ne se voit pas
+	"pm_walkbob"			"0.32"		// 2,5 pas par seconde (0.3)
+	"pm_runbob"				"0.42"		// 3,3 pas par seconde (0.4)
+	"pm_crouchbob"			"0.22"		// (0.5)
+	"pm_bobup"				"0.004"		// (0.005)
+	"pm_bobpitch"			"0.0008"	// (0.002)
+	"pm_bobroll"			"0.0005"	// (0.002)
+	"pm_runpitch"			"0.0008"	// (0.002)
+	"pm_runroll"			"0.0015"	// (0.005)
 }

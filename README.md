@@ -12,13 +12,31 @@ redescendre pour l'extraire. Les possédés doivent les tuer. Cinq à dix minute
 Migration en cours, depuis un prototype Three.js vers **id Tech 4**, sur la base
 de [RBDOOM-3-BFG](https://github.com/RobertBeckebans/RBDOOM-3-BFG).
 
-Rien n'est migré pour l'instant : la milestone 0 est un audit.
+Faites :
 
-- [`MIGRATION.md`](MIGRATION.md) — l'audit, la correspondance système par
-  système, l'arborescence, les risques, et le plan de la première milestone.
-- [`docs/FEEL.md`](docs/FEEL.md) — ce que le prototype savait du ressenti :
-  valeurs mesurées, méthode, et les pièges déjà payés.
-- [`docs/LICENSES.md`](docs/LICENSES.md) — le registre des dépendances et de
+- **Milestone 1** : le moteur se construit sur Mac et démarre avec nos seules
+  données, sans aucune donnée de Doom 3.
+- **Milestone 2** : la migration room, et le militaire qui s'y déplace, lourd
+  et précis, sans bunny hop ni strafe jump.
+
+```bash
+tools/build.sh                     # construit le jeu
+tools/run.sh +map migration_room   # la carte du brief
+tools/run.sh +map move_test        # l'aire d'essai du déplacement
+tools/movetest.sh                  # le banc d'essai, ses mesures
+```
+
+À lire :
+
+- [`MIGRATION.md`](MIGRATION.md) : l'audit, la correspondance système par
+  système, l'arborescence, les risques, les milestones.
+- [`docs/BUILD.md`](docs/BUILD.md) : construire sur macOS, les correctifs du
+  moteur, ce qu'il exige pour démarrer sans Doom 3.
+- [`docs/FEEL.md`](docs/FEEL.md) : le ressenti, valeurs mesurées et méthode,
+  du prototype au déplacement du militaire.
+- [`docs/DEBUG.md`](docs/DEBUG.md) : les outils de mise au point, et les
+  pièges du moteur pour les essais automatiques.
+- [`docs/LICENSES.md`](docs/LICENSES.md) : le registre des dépendances et de
   leurs licences. Rien n'entre dans le projet sans y figurer.
 
 Le prototype reste dans `../unholy`, intact et jouable. Il sert de

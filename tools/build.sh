@@ -51,7 +51,12 @@ for patch in "$ROOT"/patches/*.patch; do
 	fi
 done
 
-if [ ! -f "$BUILD/Makefile" ]; then
+# Le code du jeu vit dans neo/unholy, hors du moteur : le correctif 0005
+# l'ajoute a la compilation quand UNHOLY_GAME_DIR le designe. Un fichier
+# ajoute ou retire y est vu tout seul, sans reconfigurer.
+GAME_DIR="$ROOT/neo/unholy"
+
+if [ ! -f "$BUILD/Makefile" ] || ! grep -q "^UNHOLY_GAME_DIR:" "$BUILD/CMakeCache.txt"; then
 	OPENAL_PREFIX="$(brew --prefix openal-soft)"
 	# Cible macOS 11 : c'est le minimum du moteur sur Apple Silicon.
 	cmake -G "Unix Makefiles" -S "$ROOT/engine/neo" -B "$BUILD" \
@@ -61,6 +66,7 @@ if [ ! -f "$BUILD/Makefile" ]; then
 		-DFFMPEG=OFF -DBINKDEC=ON -DUSE_MoltenVK=ON \
 		-DOPENAL_LIBRARY="$OPENAL_PREFIX/lib/libopenal.dylib" \
 		-DOPENAL_INCLUDE_DIR="$OPENAL_PREFIX/include" \
+		-DUNHOLY_GAME_DIR="$GAME_DIR" \
 		-Wno-dev
 fi
 

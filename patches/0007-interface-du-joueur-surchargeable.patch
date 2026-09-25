@@ -1,0 +1,14 @@
+diff --git a/neo/d3xp/Player.h b/neo/d3xp/Player.h
+index c056a6c..b588dfa 100644
+--- a/neo/d3xp/Player.h
++++ b/neo/d3xp/Player.h
+@@ -521,7 +521,8 @@ public:
+ 	void					UpdateSpectatingText();
+ 	void					ClearChatMessage( int index );
+ 
+-	void					DrawHUD( idMenuHandler_HUD* hudManager );
++	// UNHOLY: virtuelle, pour que le joueur d'UNHOLY dessine sa propre interface.
++	virtual void			DrawHUD( idMenuHandler_HUD* hudManager );
+ 
+ 	void					WeaponFireFeedback( const idDict* weaponDef );
+ 

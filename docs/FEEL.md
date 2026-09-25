@@ -161,3 +161,74 @@ starter fatigué (battement rapide), ou rien.
   divise pas par son échelle. L'arme se posait à une unité de l'œil.
 - **Un éclat de tir posé dans le monde ne tombe pas là où le canon est
   dessiné**, l'arme tenue en main étant rendue par une autre caméra.
+
+---
+
+## 8. Le déplacement du militaire
+
+Le prototype n'en savait rien : il se déplaçait comme un joueur de Quake III,
+tel qu'hérité de l'arène d'origine (320 unités par seconde, accélération 10,
+air 1). Il n'y avait rien à retrouver, tout était à régler. Le brief fixe
+l'intention : lourd, précis, contrôlé, bien plus lent qu'un jeu d'arène, sans
+bunny hop ni strafe jump.
+
+Réglé à la milestone 2, sous id Tech 4. Les valeurs vivent dans
+`content/def/unholy_base.def` : chaque clé `pm_` y règle la variable du même
+nom à l'apparition du militaire, si bien qu'on essaie une valeur à la console
+avant de l'y reporter. Une unité vaut un pouce, 2,54 cm.
+
+| Réglage | UNHOLY | Moteur | Intention |
+| --- | --- | --- | --- |
+| Marche | 125 u/s, 3,2 m/s | 140 | Le pas d'une progression |
+| Course | 210 u/s, 5,3 m/s | 220 | Vers l'avant seulement |
+| Accroupi | 65 u/s, 1,65 m/s | 80 | |
+| Endurance | 8 s, seuil 2 s, recharge 0,8/s | 24, 45, 0,75 | Six secondes de course pleine, deux pour retomber au pas |
+| Accélération, frottement, arrêt | 8, 7,5, 50 | 10, 6, 100 | Un tiers de seconde pour prendre l'allure, un arrêt net |
+| Calcul de l'accélération | la vitesse suit la direction voulue | Quake 2 | Jamais plus vite que l'allure voulue : le strafe jump disparaît |
+| Contrôle en l'air | 0,5 | 1 | Presque rien à corriger une fois parti |
+| Saut | 20 u, 51 cm | 48 u, 1,22 m | Enjamber, pas bondir |
+| Avant de ressauter | 400 ms au sol, bouton relâché | rien | C'est ce qui tue le bunny hop |
+| Réception | 70 % de la vitesse gardée | 100 % | Le poids de l'équipement |
+| Marche franchie sans sauter | 12 u, 30 cm | 16 u | Une marche, pas un meuble |
+| Gabarit debout | 72 u, yeux à 66 | 74, 68 | 1,83 m, les yeux à 1,68 m |
+| Gabarit accroupi | 48 u, yeux à 42 | 38, 32 | 1,22 m, les yeux à 1,07 m |
+| Balancement de la vue | 2,5 pas/s en marche, 3,3 en course ; tangage et roulis réduits de 60 à 75 %, montée de 20 % | 2,3 et 3,1 pas/s | Le pas se sent, il ne se voit pas |
+
+Le champ de vision par défaut passe à 90° (`g_fov`, horizontal en 16/9 pour
+ce moteur). Le prototype tournait à 90° **vertical**, soit 121° horizontal :
+un réglage hérité, jamais choisi.
+
+### Ce que mesure le banc d'essai
+
+`tools/movetest.sh` pilote le militaire par gestes fixes dans l'aire
+`move_test`. À droite, les mêmes gestes avec les réglages de mouvement du
+moteur et les mêmes allures, pour voir ce que chaque réglage change.
+
+| Mesure | UNHOLY | Réglages du moteur |
+| --- | --- | --- |
+| Marche : 90 % puis 99 % de l'allure | 0,25 s puis 0,35 s | 0,17 s puis 0,18 s |
+| Marche : arrêt | 0,25 s, sur 30 cm | 0,22 s, sur 29 cm |
+| Course : 90 % puis 99 % de l'allure | 0,25 s puis 0,33 s | 0,13 s puis 0,15 s |
+| Course : arrêt | 0,32 s, sur 55 cm | 0,28 s, sur 61 cm |
+| Accroupi : 90 % de l'allure | 0,38 s | 0,98 s |
+| S'accroupir, se relever | 0,38 s chaque fois | 0,38 s |
+| Saut | 51 cm, 0,38 s en l'air | 51 cm, 0,38 s |
+| Appuis répétés pendant 4 s | 5 sauts, 0,80 s au plus court entre deux | 10 sauts, 0,40 s |
+| Bunny hop : vitesse moyenne | 202 u/s, sous la course | 210 u/s, la course conservée |
+| Strafe jump : vitesse maximale | 210 u/s, jamais au-dessus de la course | 249 u/s, 19 % de mieux |
+| Endurance | 6,1 s de course pleine, retour au pas à 7,95 s, pleine après 8 s d'arrêt | |
+
+Deux lectures :
+
+- **Sauter ne rapporte rien.** Le strafe jump ne dépasse jamais l'allure de
+  course, et le bunny hop va moins vite que courir, avec deux fois moins de
+  sauts.
+- **L'accroupi du moteur était pris dans le frottement.** Son seuil d'arrêt
+  (100) dépasse l'allure accroupie (65) : sous ce seuil, le frottement mange
+  presque toute l'accélération, et il fallait une seconde pour avancer. Le
+  seuil à 50 le libère.
+
+Ce que ces chiffres ne disent pas : si c'est juste. Ils disent que les
+exploits sont fermés et que les temps sont ceux qu'on a visés. Le reste se
+juge en jouant, relevé affiché (`F3`), et les valeurs se reprennent à la
+console. Le banc est là pour que la retouche suivante se compare à celle-ci.

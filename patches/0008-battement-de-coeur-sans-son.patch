@@ -1,0 +1,27 @@
+diff --git a/neo/d3xp/Player.cpp b/neo/d3xp/Player.cpp
+index fa9b89e..8c596c9 100644
+--- a/neo/d3xp/Player.cpp
++++ b/neo/d3xp/Player.cpp
+@@ -7397,11 +7397,17 @@ void idPlayer::SetCurrentHeartRate()
+ 		if( pct != zeroVol )
+ 		{
+ 			StartSound( "snd_heartbeat", SND_CHANNEL_HEART, SSF_PRIVATE_SOUND, false, NULL );
+-			// modify just this channel to a custom volume
+-			soundShaderParms_t	parms;
+-			memset( &parms, 0, sizeof( parms ) );
+-			parms.volume = pct;
+-			refSound.referenceSound->ModifySound( SND_CHANNEL_HEART, &parms );
++			// UNHOLY: l'emetteur sonore ne nait qu'au premier son joue. Un joueur
++			// qui n'en a encore joue aucun, faute de "snd_heartbeat" declare,
++			// n'en a pas : le volume se reglait alors sur un pointeur nul.
++			if( refSound.referenceSound != NULL )
++			{
++				// modify just this channel to a custom volume
++				soundShaderParms_t	parms;
++				memset( &parms, 0, sizeof( parms ) );
++				parms.volume = pct;
++				refSound.referenceSound->ModifySound( SND_CHANNEL_HEART, &parms );
++			}
+ 		}
+ 
+ 		lastHeartBeat = gameLocal.time;

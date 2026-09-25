@@ -1,0 +1,25 @@
+diff --git a/neo/CMakeLists.txt b/neo/CMakeLists.txt
+index a0d9e6e..0feb9ed 100644
+--- a/neo/CMakeLists.txt
++++ b/neo/CMakeLists.txt
+@@ -1063,6 +1063,20 @@ endmacro()
+ 
+ AddSubdirectory( tools/imgui/afeditor )
+ 
++# UNHOLY: le code du jeu vit hors du moteur, dans le dossier que designe
++# UNHOLY_GAME_DIR. Il est compile avec le jeu, exactement comme les sources de
++# d3xp, et voit les memes en-tetes.
++if(UNHOLY_GAME_DIR)
++	file(GLOB_RECURSE UNHOLY_INCLUDES CONFIGURE_DEPENDS ${UNHOLY_GAME_DIR}/*.h)
++	file(GLOB_RECURSE UNHOLY_SOURCES CONFIGURE_DEPENDS ${UNHOLY_GAME_DIR}/*.cpp)
++
++	source_group("unholy" FILES ${UNHOLY_INCLUDES} ${UNHOLY_SOURCES})
++
++	list(APPEND RBDOOM3_INCLUDES ${UNHOLY_INCLUDES})
++	list(APPEND RBDOOM3_SOURCES ${UNHOLY_SOURCES})
++	include_directories(${UNHOLY_GAME_DIR})
++endif()
++
+ if(DOOM_CLASSIC)
+ 	add_definitions(-DUSE_DOOMCLASSIC)
+ 

@@ -1,0 +1,172 @@
+diff --git a/neo/d3xp/gamesys/SysCvar.cpp b/neo/d3xp/gamesys/SysCvar.cpp
+index 4ee01a1..676163e 100644
+--- a/neo/d3xp/gamesys/SysCvar.cpp
++++ b/neo/d3xp/gamesys/SysCvar.cpp
+@@ -268,6 +268,13 @@ idCVar pm_thirdPerson(				"pm_thirdPerson",			"0",			CVAR_GAME | CVAR_NETWORKSYN
+ idCVar pm_thirdPersonDeath(			"pm_thirdPersonDeath",		"0",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_BOOL, "enables third person view when player dies" );
+ idCVar pm_modelView(				"pm_modelView",				"0",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER, "draws camera from POV of player model (1 = always, 2 = when dead)", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
+ idCVar pm_airMsec(					"pm_air",					"30000",		CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER, "how long in milliseconds the player can go without air before he starts taking damage" );
++// UNHOLY: les constantes de idPhysics_Player, rendues reglables. Les valeurs par
++// defaut sont celles du moteur : rien ne change tant qu'on ne les touche pas.
++idCVar pm_accelerate(				"pm_accelerate",			"10",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_FLOAT, "acceleration on the ground" );
++idCVar pm_airaccelerate(			"pm_airaccelerate",			"1",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_FLOAT, "acceleration in the air" );
++idCVar pm_friction(					"pm_friction",				"6",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_FLOAT, "ground friction" );
++idCVar pm_stopspeed(				"pm_stopspeed",				"100",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_FLOAT, "below this speed, friction acts as if the player moved at this speed" );
++idCVar pm_accelmode(				"pm_accelmode",				"0",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER, "0 = accelerate along the wished direction (Quake 2), 1 = steer the velocity toward the wished velocity, which never exceeds the wished speed and rules out strafe jumping", 0, 1, idCmdSystem::ArgCompletion_Integer<0,1> );
+ 
+ idCVar g_showPlayerShadow(			"g_showPlayerShadow",		"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "enables shadow of player model" );
+ idCVar g_showHud(					"g_showHud",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "" );
+diff --git a/neo/d3xp/gamesys/SysCvar.h b/neo/d3xp/gamesys/SysCvar.h
+index a16027a..952d12b 100644
+--- a/neo/d3xp/gamesys/SysCvar.h
++++ b/neo/d3xp/gamesys/SysCvar.h
+@@ -196,6 +196,12 @@ extern idCVar	pm_thirdPerson;
+ extern idCVar	pm_thirdPersonDeath;
+ extern idCVar	pm_modelView;
+ extern idCVar	pm_airMsec;
++// UNHOLY: constantes de idPhysics_Player rendues reglables
++extern idCVar	pm_accelerate;
++extern idCVar	pm_airaccelerate;
++extern idCVar	pm_friction;
++extern idCVar	pm_stopspeed;
++extern idCVar	pm_accelmode;
+ 
+ extern idCVar	g_showPlayerShadow;
+ extern idCVar	g_showHud;
+diff --git a/neo/d3xp/physics/Physics_Player.cpp b/neo/d3xp/physics/Physics_Player.cpp
+index b748944..a5b0ae9 100644
+--- a/neo/d3xp/physics/Physics_Player.cpp
++++ b/neo/d3xp/physics/Physics_Player.cpp
+@@ -35,17 +35,18 @@ CLASS_DECLARATION( idPhysics_Actor, idPhysics_Player )
+ END_CLASS
+ 
+ // movement parameters
+-const float PM_STOPSPEED		= 100.0f;
++// UNHOLY: PM_STOPSPEED, PM_AIRACCELERATE et PM_FRICTION sont devenues les
++// variables pm_stopspeed, pm_airaccelerate et pm_friction, et l'acceleration
++// au sol la variable pm_accelerate (gamesys/SysCvar.cpp), aux memes valeurs par
++// defaut. PM_ACCELERATE ne sert plus qu'a l'echelle et au vol sans collision.
+ const float PM_SWIMSCALE		= 0.5f;
+ const float PM_LADDERSPEED		= 100.0f;
+ const float PM_STEPSCALE		= 1.0f;
+ 
+ const float PM_ACCELERATE		= 10.0f;
+-const float PM_AIRACCELERATE	= 1.0f;
+ const float PM_WATERACCELERATE	= 4.0f;
+ const float PM_FLYACCELERATE	= 8.0f;
+ 
+-const float PM_FRICTION			= 6.0f;
+ const float PM_AIRFRICTION		= 0.0f;
+ const float PM_WATERFRICTION	= 1.0f;
+ const float PM_FLYFRICTION		= 3.0f;
+@@ -125,42 +126,47 @@ Handles user intended acceleration
+ */
+ void idPhysics_Player::Accelerate( const idVec3& wishdir, const float wishspeed, const float accel )
+ {
+-#if 1
+-	// q2 style
+-	float addspeed, accelspeed, currentspeed;
+-
+-	currentspeed = current.velocity * wishdir;
+-	addspeed = wishspeed - currentspeed;
+-	if( addspeed <= 0 )
++	// UNHOLY: les deux calculs etaient deja la, le second coupe par un #if.
++	// pm_accelmode choisit entre eux, le premier restant celui par defaut.
++	if( pm_accelmode.GetInteger() == 0 )
+ 	{
+-		return;
++		// q2 style
++		float addspeed, accelspeed, currentspeed;
++
++		currentspeed = current.velocity * wishdir;
++		addspeed = wishspeed - currentspeed;
++		if( addspeed <= 0 )
++		{
++			return;
++		}
++		accelspeed = accel * frametime * wishspeed;
++		if( accelspeed > addspeed )
++		{
++			accelspeed = addspeed;
++		}
++
++		current.velocity += accelspeed * wishdir;
+ 	}
+-	accelspeed = accel * frametime * wishspeed;
+-	if( accelspeed > addspeed )
++	else
+ 	{
+-		accelspeed = addspeed;
+-	}
++		// proper way (avoids strafe jump maxspeed bug), but feels bad
++		idVec3		wishVelocity;
++		idVec3		pushDir;
++		float		pushLen;
++		float		canPush;
+ 
+-	current.velocity += accelspeed * wishdir;
+-#else
+-	// proper way (avoids strafe jump maxspeed bug), but feels bad
+-	idVec3		wishVelocity;
+-	idVec3		pushDir;
+-	float		pushLen;
+-	float		canPush;
++		wishVelocity = wishdir * wishspeed;
++		pushDir = wishVelocity - current.velocity;
++		pushLen = pushDir.Normalize();
+ 
+-	wishVelocity = wishdir * wishspeed;
+-	pushDir = wishVelocity - current.velocity;
+-	pushLen = pushDir.Normalize();
++		canPush = accel * frametime * wishspeed;
++		if( canPush > pushLen )
++		{
++			canPush = pushLen;
++		}
+ 
+-	canPush = accel * frametime * wishspeed;
+-	if( canPush > pushLen )
+-	{
+-		canPush = pushLen;
++		current.velocity += canPush * pushDir;
+ 	}
+-
+-	current.velocity += canPush * pushDir;
+-#endif
+ }
+ 
+ /*
+@@ -525,8 +531,8 @@ void idPhysics_Player::Friction()
+ 			// if getting knocked back, no friction
+ 			if( !( current.movementFlags & PMF_TIME_KNOCKBACK ) )
+ 			{
+-				control = speed < PM_STOPSPEED ? PM_STOPSPEED : speed;
+-				drop += control * PM_FRICTION * frametime;
++				control = speed < pm_stopspeed.GetFloat() ? pm_stopspeed.GetFloat() : speed;
++				drop += control * pm_friction.GetFloat() * frametime;
+ 			}
+ 		}
+ 	}
+@@ -696,7 +702,7 @@ void idPhysics_Player::AirMove()
+ 	wishspeed *= scale;
+ 
+ 	// not on ground, so little effect on velocity
+-	idPhysics_Player::Accelerate( wishdir, wishspeed, PM_AIRACCELERATE );
++	idPhysics_Player::Accelerate( wishdir, wishspeed, pm_airaccelerate.GetFloat() );
+ 
+ 	// we may have a ground plane that is very steep, even
+ 	// though we don't have a groundentity
+@@ -781,11 +787,11 @@ void idPhysics_Player::WalkMove()
+ 	// when a player gets hit, they temporarily lose full control, which allows them to be moved a bit
+ 	if( ( groundMaterial && groundMaterial->GetSurfaceFlags() & SURF_SLICK ) || current.movementFlags & PMF_TIME_KNOCKBACK )
+ 	{
+-		accelerate = PM_AIRACCELERATE;
++		accelerate = pm_airaccelerate.GetFloat();
+ 	}
+ 	else
+ 	{
+-		accelerate = PM_ACCELERATE;
++		accelerate = pm_accelerate.GetFloat();
+ 	}
+ 
+ 	idPhysics_Player::Accelerate( wishdir, wishspeed, accelerate );

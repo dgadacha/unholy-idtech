@@ -15,7 +15,7 @@ dérivé. Les données du jeu, elles, restent sous nos propres conditions.
 | Moteur RBDOOM-3-BFG | GPL-3.0 + conditions supplémentaires d'id Software | `github.com/RobertBeckebans/RBDOOM-3-BFG` |
 | Nos modifications du moteur | GPL-3.0 | `patches/` |
 | Code de jeu UNHOLY (C++) | GPL-3.0 — lié au moteur, donc programme dérivé | `neo/unholy/` |
-| Scripts de compilation | GPL-3.0 | racine, `CMakeLists.txt` |
+| Scripts de compilation | GPL-3.0 | `tools/build.sh`, et le `CMakeLists.txt` du moteur tel que le modifient les `patches/` |
 
 À lire avant toute sortie commerciale : `LICENSE_EXCEPTIONS.md` du dépôt
 moteur, qui liste les composants non-GPL, et les conditions supplémentaires de
@@ -29,11 +29,11 @@ font pas partie de sa publication GPL.
 
 | Catégorie | Emplacement | Licence |
 | --- | --- | --- |
-| Modèles et animations | `base/models/unholy/` | à nous |
-| Textures et matières | `base/textures/unholy/`, `base/materials/` | à nous |
-| Sons et musiques | `base/sounds/unholy/` | à nous |
-| Cartes | `base/maps/` | à nous |
-| Interface | `base/guis/unholy/` | à nous |
+| Modèles et animations | `content/models/unholy/` | à nous |
+| Textures et matières | `content/textures/unholy/`, `content/materials/` | à nous |
+| Sons et musiques | `content/sounds/unholy/` | à nous |
+| Cartes | `content/maps/` | à nous |
+| Interface | `content/guis/unholy/` | à nous |
 
 ## Assets tiers
 
@@ -71,13 +71,22 @@ Outils de construction, non livrés : DXC (compilateur de shaders, NCSA), ispc,
 CMake. OpenAL Soft est sous LGPL : il doit rester une bibliothèque dynamique
 que l'utilisateur peut remplacer, ce qui est le cas aujourd'hui.
 
-## Contenu écrit ou généré pour la milestone 1
+## Contenu écrit ou généré par nous
 
 Tout ce qui est dans `content/` est à nous : écrit à la main (déclarations,
-matières, scripts, commandes) ou généré par nos outils (police, lumières,
-grille de test). Rien n'est repris du `base/` livré avec le moteur, dont les
-`.def` et `.script` sont ceux de Doom 3 et ne font pas partie de la publication
-GPL d'id.
+matières, scripts, commandes) ou généré par nos outils. Rien n'est repris du
+`base/` livré avec le moteur, dont les `.def` et `.script` sont ceux de Doom 3
+et ne font pas partie de la publication GPL d'id.
+
+| Contenu | Outil | Entré en |
+| --- | --- | --- |
+| Police, jeu de caractères de la console | `tools/fontgen/` depuis les polices libres ci-dessus | M1 |
+| Lumières par défaut, grille de test | écrites à la main, images générées | M1 |
+| Textures de développement (teintes et trame d'un mètre) | `tools/textures/make_dev_textures.py` | M2 |
+| Cartes `test_box`, `migration_room`, `move_test` | `tools/maps/` | M1, M2 |
+
+Les teintes des textures de développement sont celles arrêtées pour l'immeuble
+du prototype : des valeurs, pas des images reprises.
 
 ## Interdits
 

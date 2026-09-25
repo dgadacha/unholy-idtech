@@ -1,0 +1,73 @@
+/*
+	UNHOLY -- matieres de developpement
+
+	Une teinte et une trame d'un metre (tools/textures/make_dev_textures.py).
+	Elles tiennent la place des vraies matieres PBR, qui arrivent avec
+	l'eclairage : sans carte de rugosite, le moteur les traite en matiere
+	mate, sans reflet, ce qui suffit a juger des volumes et des distances.
+
+	Le mot qui suit l'image de l'editeur donne la nature de la surface : pas,
+	impacts et decals la liront plus tard.
+*/
+
+textures/unholy/dev/floor
+{
+	qer_editorimage	textures/unholy/dev/floor
+	stone
+	basecolormap	textures/unholy/dev/floor
+}
+
+textures/unholy/dev/wall
+{
+	qer_editorimage	textures/unholy/dev/wall
+	stone
+	basecolormap	textures/unholy/dev/wall
+}
+
+textures/unholy/dev/ceiling
+{
+	qer_editorimage	textures/unholy/dev/ceiling
+	stone
+	basecolormap	textures/unholy/dev/ceiling
+}
+
+textures/unholy/dev/block
+{
+	qer_editorimage	textures/unholy/dev/block
+	metal
+	basecolormap	textures/unholy/dev/block
+}
+
+// A plaquer sur un vantail entier : l'image porte ses deux panneaux.
+textures/unholy/dev/door
+{
+	qer_editorimage	textures/unholy/dev/door
+	wood
+	basecolormap	textures/unholy/dev/door
+}
+
+/*
+	Surfaces qui emettent : le verre d'un plafonnier, un tube fluorescent.
+	Elles ne recoivent pas la lumiere, elles s'ajoutent a l'image, et ne
+	portent pas d'ombre : la lampe qui les motive est juste a cote, et ce
+	serait la leur.
+*/
+textures/unholy/dev/lamp
+{
+	qer_editorimage	textures/unholy/dev/lamp
+	noshadows
+	{
+		blend	add
+		map		textures/unholy/dev/lamp
+	}
+}
+
+textures/unholy/dev/neon
+{
+	qer_editorimage	textures/unholy/dev/neon
+	noshadows
+	{
+		blend	add
+		map		textures/unholy/dev/neon
+	}
+}

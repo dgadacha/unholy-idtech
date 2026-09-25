@@ -37,7 +37,7 @@ git submodule update --init --recursive --depth 1
 ```bash
 tools/build.sh           # applique les correctifs, configure si besoin, compile
 tools/run.sh             # lance le jeu, fenêtré
-tools/run.sh +map test_box
+tools/run.sh +map migration_room
 ```
 
 `tools/build.sh --clean` repart de zéro. Compter deux à trois minutes sur un
@@ -47,8 +47,23 @@ Les cartes se compilent avec le `dmap` intégré au moteur, après un clone et �
 chaque modification du `.map` :
 
 ```bash
-tools/run.sh +dmap test_box +quit
+tools/run.sh +dmap migration_room +dmap move_test +dmap test_box +quit
 ```
+
+Les trois cartes sont écrites par des scripts (`tools/maps/`), les textures
+de développement aussi (`tools/textures/`). On les relance après avoir changé
+une cote ou une teinte :
+
+```bash
+python3 tools/maps/make_migration_room.py
+python3 tools/textures/make_dev_textures.py
+```
+
+| Carte | Rôle |
+| --- | --- |
+| `migration_room` | La carte du brief : une pièce, un couloir, une porte, une lumière fixe, un néon, une zone sombre |
+| `move_test` | L'aire d'essai du déplacement, 65 m de côté, escalier, obstacles, passage bas, pentes |
+| `test_box` | La boîte de la milestone 1 |
 
 Ses sorties (`.proc`, `.cm`) ne sont pas versionnées, pas plus que
 `content/generated/`, où le moteur range les images et les cartes converties
@@ -60,6 +75,9 @@ au premier chargement. Tout se reconstruit seul.
   `base/` de Doom 3, et stocke les textures de lumière en RGBA8.
 - **Nom du binaire** (`-DAPP_NAME=Unholy`) : le moteur le prévoit, aucun
   correctif n'est nécessaire.
+- **Le code du jeu** vit dans `neo/unholy/`, hors du moteur. Le correctif 0005
+  l'ajoute à la compilation quand `UNHOLY_GAME_DIR` le désigne ; un fichier
+  ajouté y est vu tout seul.
 - **Vulkan par MoltenVK** (`-DUSE_MoltenVK=ON`), cible macOS 11.
 - Les **shaders** sont compilés par le moteur dans
   `engine/content/renderprogs2`, emplacement qu'il fixe lui-même ; notre
@@ -77,10 +95,15 @@ dans `patches/`, un fichier par raison, appliqué par `tools/build.sh`.
 | `0002-joueur-sans-arme` | Le rendu de l'arme lisait sa déclaration sans vérifier qu'elle existait. Le marine de Doom 3 avait toujours ses poings, donc ce chemin ne servait jamais ; un joueur sans arme plantait au premier cycle. |
 | `0003-joueur-sans-lampe-epaule` | La lampe d'épaule de BFG est une arme à part entière, avec sa déclaration et son script. Une clé `no_flashlight` permet au joueur de s'en passer : celle d'UNHOLY est montée sur le fusil. |
 | `0004-identite-unholy` | Nom du jeu, dossier de sauvegarde, fichier de configuration. Le moteur garde son nom dans la version affichée. |
+| `0005-code-du-jeu-hors-moteur` | La compilation reprend les sources de `neo/unholy/` quand `UNHOLY_GAME_DIR` les désigne. Notre code reste hors du sous-module. |
+| `0006-physique-joueur-reglable` | L'accélération, le frottement, le seuil d'arrêt et le contrôle en l'air du joueur étaient des constantes : ils deviennent des variables `pm_`, aux mêmes valeurs par défaut. Et le second calcul d'accélération, déjà écrit par id et coupé par un `#if`, devient un choix (`pm_accelmode`). |
+| `0007-interface-du-joueur-surchargeable` | `idPlayer::DrawHUD` devient virtuelle : le joueur d'UNHOLY dessine sa propre interface. |
+| `0008-battement-de-coeur-sans-son` | Quand l'endurance baisse, le cœur accélère et son volume se réglait sur l'émetteur sonore du joueur sans vérifier qu'il existe. Un joueur qui n'a encore joué aucun son n'en a pas : le jeu tombait dès la première course. |
 
-Les correctifs 0002 et 0003 ne servent qu'au joueur de base du moteur, que la
-milestone 2 remplace par le nôtre. Le 0002 corrige un vrai défaut, qui mérite
-d'être proposé en amont à RBDOOM.
+Le joueur d'UNHOLY hérite de celui du moteur : les correctifs 0002 et 0003
+restent nécessaires tant qu'il n'a ni arme ni lampe, c'est-à-dire jusqu'aux
+milestones 3 et 4. Les 0002 et 0008 corrigent de vrais défauts, qui méritent
+d'être proposés en amont à RBDOOM.
 
 **Défaut connu, non corrigé** : `idWeapon::Save` écrit aussi la déclaration de
 l'arme sans la vérifier. La sauvegarde automatique de début de niveau est
@@ -103,24 +126,30 @@ a été relevé en lançant le moteur et en lisant sa console, un manque à la f
 | Blanc des interfaces | `content/guis/assets/white.tga` | généré |
 | Scripts de base | `content/script/doom_defs.script`, `doom_main.script` | vides, à dessein |
 | Variables d'état du joueur | `content/script/unholy_player.script` | déclarations seules |
-| Entités de base | `content/def/unholy_base.def` | monde, départ, lumière, joueur |
+| Entités de base | `content/def/unholy_base.def` | monde, départ, lumière, porte, joueur |
 | Règles appelées par leur nom | `content/def/unholy_rules.def` | munitions, dégâts |
 
 Ce qui manque encore et ne bloque rien : les interfaces SWF de BFG (menu,
 HUD, écran de chargement), les icônes de manettes, les écrans légaux, le modèle
-du joueur et ses os. Le menu et le HUD d'UNHOLY seront les nôtres ; le modèle
-du militaire arrive avec la milestone 2.
+du joueur et ses os. Le menu et le HUD d'UNHOLY seront les nôtres. Le modèle
+du militaire n'a pas encore de source : la vue à la première personne n'en a
+pas besoin, les bras viendront avec le fusil.
 
 ## Vérifier
 
 ```bash
-tools/run.sh +set r_swapInterval 1 +map test_box +wait 600 +getviewpos \
-  +screenshot +wait 300 +getviewpos +quit
+tools/movetest.sh
 ```
 
-Deux positions identiques à trois cents images d'écart : le joueur tient sur
-le sol. La capture arrive dans `~/Library/Application Support/UNHOLY/`.
+Le banc d'essai du déplacement lance le jeu dans `move_test`, fait jouer six
+scénarios au militaire et imprime ses mesures, à comparer à celles de
+[`FEEL.md`](FEEL.md), § 8. Une quarantaine de secondes ; la fenêtre du jeu ne
+doit pas perdre le focus pendant ce temps.
 
-`r_swapInterval 1` n'est pas décoratif : sans synchronisation, le menu tourne
-à plusieurs milliers d'images par seconde, et les `wait` passent avant que la
-carte ait fini de charger.
+Les captures d'écran (`F12`, ou `screenshot` à la console) arrivent dans
+`~/Library/Application Support/UNHOLY/content/screenshots/`.
+
+Les essais automatiques ont leurs pièges, tous consignés dans
+[`DEBUG.md`](DEBUG.md) : les `+set` appliqués au démarrage, les impressions du
+fil de jeu absentes du journal, la pause à la perte du focus, la fermeture qui
+se bloque sous macOS.

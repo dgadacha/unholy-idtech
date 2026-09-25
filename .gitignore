@@ -11,3 +11,6 @@ content/maps/*.aas*
 
 # Caches du moteur : images et cartes converties au premier chargement.
 content/generated/
+
+# Cache de Python, laisse par les scripts de cartes.
+__pycache__/
