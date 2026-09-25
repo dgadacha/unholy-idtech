@@ -120,6 +120,7 @@ dans `patches/`, un fichier par raison, appliqué par `tools/build.sh`.
 | `0007-interface-du-joueur-surchargeable` | `idPlayer::DrawHUD` devient virtuelle : le joueur d'UNHOLY dessine sa propre interface. |
 | `0008-battement-de-coeur-sans-son` | Quand l'endurance baisse, le cœur accélère et son volume se réglait sur l'émetteur sonore du joueur sans vérifier qu'il existe. Un joueur qui n'a encore joué aucun son n'en a pas : le jeu tombait dès la première course. |
 | `0009-balancement-arme-reglable` | L'arme tenue en main se balance au pas et dérive au repos, par des mouvements calculés en dur. Deux clés de l'arme, `weaponBobScale` et `weaponDriftScale`, les dosent (défaut 1, le comportement d'origine) : les animations du fusil respirent et marchent déjà, les deux s'ajoutaient. |
+| `0010-menu-de-pause-sans-swf` | En partie, Échap ouvre le menu de pause de BFG. Son fichier SWF manque, mais le moteur le tenait pour ouvert : le jeu se mettait en pause, la souris restait captive, et rien ne le refermait, puisque c'est l'animation du SWF qui le ferme. En partie, un menu qui n'a pas pu se charger ne s'ouvre plus. Au menu principal, sans carte, rien ne change. |
 
 Le joueur d'UNHOLY hérite de celui du moteur. Depuis la milestone 3, il porte
 son fusil : le chemin du correctif 0002 ne se présente plus en jeu, mais le

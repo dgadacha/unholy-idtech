@@ -1,0 +1,18 @@
+diff --git a/neo/d3xp/menus/MenuHandler_Shell.cpp b/neo/d3xp/menus/MenuHandler_Shell.cpp
+index 40010ed..2b204db 100644
+--- a/neo/d3xp/menus/MenuHandler_Shell.cpp
++++ b/neo/d3xp/menus/MenuHandler_Shell.cpp
+@@ -700,6 +700,13 @@ idMenuHandler_Shell::ActivateMenu
+ */
+ void idMenuHandler_Shell::ActivateMenu( bool show )
+ {
++	// UNHOLY: en partie, un menu dont le SWF n'a pas pu etre charge ne s'ouvre
++	// pas. Rien ne le refermerait : c'est son animation qui appelle closeMenu
++	// (idPauseGUIClose), et le jeu resterait en pause, la souris captive.
++	if( show && inGame && gui != NULL && !gui->IsLoaded() )
++	{
++		return;
++	}
+ 
+ 	if( show && gui != NULL && gui->IsActive() )
+ 	{

@@ -41,6 +41,7 @@ viendra avec la milestone 6 : rien de natif ne le couvre.
 | `unholy_moveTest <scénario>` | le banc d'essai : il pilote le joueur par gestes fixes et imprime ses mesures. Un nom inconnu liste les scénarios |
 | `tools/movetest.sh [scénario] [+réglage valeur ...]` | le banc depuis le terminal, dans l'aire `move_test`, sans son |
 | `tools/movetest.sh tir` | le fusil : une rafale, une rafale épaulée, un rechargement, face à la cible de la migration room ; le chargeur et la réserve relevés à chaque étape |
+| `unholy_pressKey <touche>` | presse puis relâche une touche, comme le clavier, avec les noms de `bind` (`ESCAPE`, `TAB`, `MOUSE1`...) : un essai automatique ne peut pas taper dans la fenêtre du jeu |
 
 Le banc prend le clavier et la souris, replace le joueur au départ entre deux
 scénarios, arrêté, endurance pleine. Ses chiffres sont consignés dans
@@ -154,3 +155,9 @@ tout essai automatique.
 - **Sans corps, le militaire fait signaler trois os** (`bone_hips`,
   `bone_chest`, `bone_head`) à chaque carte. C'est attendu, jusqu'à ce qu'il
   ait un modèle.
+- **Les menus de BFG n'existent pas chez nous.** Échap en partie ouvrait le
+  menu de pause, invisible faute de son SWF, et le jeu restait en pause pour
+  de bon. Le correctif 0010 l'empêche : en partie, Échap ne fait plus rien
+  jusqu'au menu d'UNHOLY (milestone 9). Même chemin pour le menu que BFG
+  ouvre à la mort du joueur, qui ne peut pas encore mourir : il n'a pas été
+  essayé. Pour quitter : `quit` à la console, ou Cmd+Q.
