@@ -27,7 +27,8 @@ enum unholyMoveReport_t
 	REPORT_JUMP,		// hauteur et duree d'un saut
 	REPORT_JUMPS,		// nombre de sauts et intervalle le plus court
 	REPORT_SPEED,		// vitesse moyenne et maximale
-	REPORT_STAMINA		// duree de la course pleine, recuperation
+	REPORT_STAMINA,		// duree de la course pleine, recuperation
+	REPORT_AMMO			// chargeur et reserve, avant et apres
 };
 
 // Saut : 0 jamais, JUMP_ONCE un appui a la premiere image, JUMP_HOLD tenu,
@@ -45,7 +46,12 @@ struct unholyMoveStep_t
 	int					jump;
 	float				yawSpeed;		// degres par seconde, positif vers la gauche
 	unholyMoveReport_t	report;
+	int					impulse;		// commande donnee a la premiere image, 0 sinon
+	float				pitch;			// inclinaison de la vue, en degres vers le bas
 };
+
+// La commande de rechargement (framework/UsercmdGen.h).
+static const int IMPULSE_RELOAD = IMPULSE_13;
 
 struct unholyMoveScenario_t
 {
@@ -102,6 +108,18 @@ static const unholyMoveStep_t staminaSteps[] =
 	{ "repos",		12000,	0,		0,		0,				0,	0.0f,	REPORT_STAMINA },
 };
 
+// Tenir la detente, puis recharger : ce que le chargeur et la reserve deviennent.
+// La vue garde la direction du depart, baissee de quoi viser le torse d'une
+// cible a quatre metres.
+static const float FIRE_PITCH = 7.5f;
+static const unholyMoveStep_t fireSteps[] =
+{
+	{ "arme prete",	1500,	0,		0,		0,								0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
+	{ "rafale",		1500,	0,		0,		BUTTON_ATTACK,					0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
+	{ "epaule",		1200,	0,		0,		BUTTON_ZOOM | BUTTON_ATTACK,	0,	0.0f,	REPORT_AMMO,	0,				FIRE_PITCH },
+	{ "recharge",	4200,	0,		0,		0,								0,	0.0f,	REPORT_AMMO,	IMPULSE_RELOAD,	FIRE_PITCH },
+};
+
 #define SCENARIO( name, description, steps ) { name, description, steps, sizeof( steps ) / sizeof( steps[0] ) }
 
 static const unholyMoveScenario_t scenarios[] =
@@ -113,6 +131,7 @@ static const unholyMoveScenario_t scenarios[] =
 	SCENARIO( "bhop",		"sauter en boucle en courant",						bhopSteps ),
 	SCENARIO( "strafe",		"sauter en boucle en tournant, avant et cote",		strafeSteps ),
 	SCENARIO( "endurance",	"courir jusqu'a epuisement, puis recuperer",		staminaSteps ),
+	SCENARIO( "tir",		"une rafale, une rafale epaulee, un rechargement",	fireSteps ),
 };
 static const int numScenarios = sizeof( scenarios ) / sizeof( scenarios[0] );
 
@@ -173,6 +192,7 @@ void UnholyMoveTest::ListScenarios()
 		gameLocal.Printf( "  %-10s %s\n", scenarios[i].name, scenarios[i].description );
 	}
 	gameLocal.Printf( "  %-10s les six premiers, a la suite\n", "tout" );
+	gameLocal.Printf( "  (tir : la vue garde la direction du depart ; viser d'abord une cible)\n" );
 }
 
 /*
@@ -282,6 +302,8 @@ void UnholyMoveTest::BeginStep( int time )
 	fullSprintEnd = -1;
 	walkReached = -1;
 	staminaFull = -1;
+	clipStart = hasSample ? last.clip : -1;
+	reserveStart = hasSample ? last.reserve : -1;
 }
 
 /*
@@ -313,7 +335,9 @@ void UnholyMoveTest::Drive( int time, int frameMsec, unholyMoveDrive_t& drive )
 	drive.forward = 0;
 	drive.right = 0;
 	drive.buttons = 0;
+	drive.impulse = 0;
 	drive.yawDelta = 0.0f;
+	drive.pitch = 0.0f;
 	drive.resetToStart = false;
 
 	if( scenario == NULL )
@@ -378,6 +402,11 @@ void UnholyMoveTest::Drive( int time, int frameMsec, unholyMoveDrive_t& drive )
 	{
 		drive.buttons |= BUTTON_JUMP;
 	}
+	if( stepFrame == 0 )
+	{
+		drive.impulse = step.impulse;
+	}
+	drive.pitch = step.pitch;
 
 	drive.yawDelta = step.yawSpeed * frameMsec * 0.001f;
 	stepFrame++;
@@ -543,6 +572,11 @@ void UnholyMoveTest::EndStep()
 				gameLocal.Printf( "%s endurance pleine (%.1f s) apres %s\n",
 								  prefix, pm_stamina.GetFloat(), Seconds( staminaFull ).c_str() );
 			}
+			break;
+
+		case REPORT_AMMO:
+			gameLocal.Printf( "%s chargeur %d -> %d, reserve %d -> %d\n",
+							  prefix, clipStart, last.clip, reserveStart, last.reserve );
 			break;
 
 		default:

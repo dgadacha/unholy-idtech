@@ -3,9 +3,11 @@
 	UNHOLY -- script principal
 
 	Le moteur exige ce fichier : il le compile au demarrage, avant toute
-	carte. Il reste vide a dessein. La logique d'UNHOLY vit en C++, dans
-	neo/unholy/, et pas ici : elle est de toute facon sous GPL, autant
-	qu'elle soit la ou la frontiere entre code et donnees est nette.
+	carte. Il n'inclut que ce que le moteur exige d'avoir en script : les
+	variables d'etat du joueur, et l'aiguillage de l'arme, dont idWeapon ne
+	sait pas se passer. La logique d'UNHOLY vit en C++, dans neo/unholy/, et
+	pas ici : elle est de toute facon sous GPL, autant qu'elle soit la ou la
+	frontiere entre code et donnees est nette.
 
 	Les scripts de Doom 3 livres avec le moteur ne sont pas repris : la
 	publication GPL d'id ne les contenait pas, ils viennent des donnees du
@@ -13,4 +15,7 @@
 
 ***********************************************************************/
 
+#include "script/doom_defs.script"
+#include "script/unholy_events.script"
 #include "script/unholy_player.script"
+#include "script/weapon_unholy_rifle.script"

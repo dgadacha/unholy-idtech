@@ -31,7 +31,7 @@ font pas partie de sa publication GPL.
 | --- | --- | --- |
 | Modèles et animations | `content/models/unholy/` | à nous |
 | Textures et matières | `content/textures/unholy/`, `content/materials/` | à nous |
-| Sons et musiques | `content/sounds/unholy/` | à nous |
+| Sons et musiques | `content/sound/unholy/` | à nous |
 | Cartes | `content/maps/` | à nous |
 | Interface | `content/guis/unholy/` | à nous |
 
@@ -44,16 +44,29 @@ entre. Pas après.
 | --- | --- | --- | --- | --- |
 | Barlow Condensed Medium | Police par défaut du moteur (`newfonts/Unholy`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/barlowcondensed` — licence dans `tools/fontgen/sources/` | M1 |
 | IBM Plex Mono Regular | Jeu de caractères de la console (`bigchars`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/ibmplexmono` — licence dans `tools/fontgen/sources/` | M1 |
+| Retro Weapon Pack V1, par kuptchi | Fusil, bras et leurs animations, flamme du tir (`content/models/retro/`, `content/textures/retro/`) | Gratuit pour les projets personnels et commerciaux, attribution non requise mais appréciée (`Readme.pdf` de l'archive) | archive `RetroWeaponPack_V1.zip` ; auteur joignable sur Discord, `kuptchi` ; page de téléchargement à consigner | M3 |
 
 La licence OFL impose de livrer le texte de la licence avec la police, et
 interdit de vendre la police seule. Les deux sont respectés tant que le texte
 voyage dans le paquet.
 
+**Le Retro Weapon Pack n'est pas dans le dépôt.** Son Readme autorise l'usage
+dans un jeu, commercial compris, mais ne dit rien de la redistribution de ses
+fichiers, et le dépôt est public. Seuls le script de conversion
+(`tools/assets/`) et nos déclarations (`content/def/unholy_weapons.def`,
+`content/materials/retro_weapons.mtr`) sont versionnés ; les fichiers
+convertis sont produits sur chaque machine depuis l'archive et ignorés par
+git. Le jeu vendu les embarquera convertis : c'est l'usage que le Readme
+autorise. La conversion les modifie (squelettes des bras et du fusil réunis,
+animations recalculées, unités, flamme estompée vers le bord), ce que le
+Readme ne défend pas : il conseille lui-même un outil pour retoucher les
+textures. L'auteur sera crédité au générique, même sans obligation.
+
 Assets du prototype Three.js à requalifier avant reprise :
 
 | Asset | Usage | À vérifier |
 | --- | --- | --- |
-| `assault_rifle.glb` | Fusil du militaire | Origine et conditions de la source |
+| `assault_rifle.glb` | Fusil du militaire | Abandonné en M3, jamais repris : le Retro Weapon Pack le remplace, avec les bras et les animations |
 | `fluorescent_fixture.glb` | Réglette de plafond | Générée par Meshy AI — conditions du service |
 | `wall/floor/ceiling/glass` | Matières de l'immeuble | Origine et conditions ; à reproduire en PBR complet de toute façon |
 | `logo.png` | Titre | À nous |
@@ -68,15 +81,19 @@ Assets du prototype Three.js à requalifier avant reprise :
 | SDL2 | Fenêtre, entrées | zlib | Homebrew (`sdl2-compat`) |
 
 Outils de construction, non livrés : DXC (compilateur de shaders, NCSA), ispc,
-CMake. OpenAL Soft est sous LGPL : il doit rester une bibliothèque dynamique
-que l'utilisateur peut remplacer, ce qui est le cas aujourd'hui.
+CMake, Blender (GPL-2.0 ou ultérieure ; il convertit le pack d'armes, et sa
+licence ne s'étend pas à ce qu'il produit), Python avec Pillow et NumPy.
+OpenAL Soft est sous LGPL : il doit rester une bibliothèque dynamique que
+l'utilisateur peut remplacer, ce qui est le cas aujourd'hui.
 
 ## Contenu écrit ou généré par nous
 
-Tout ce qui est dans `content/` est à nous : écrit à la main (déclarations,
-matières, scripts, commandes) ou généré par nos outils. Rien n'est repris du
-`base/` livré avec le moteur, dont les `.def` et `.script` sont ceux de Doom 3
-et ne font pas partie de la publication GPL d'id.
+Tout ce qui est versionné dans `content/` est à nous : écrit à la main
+(déclarations, matières, scripts, commandes) ou généré par nos outils. Rien
+n'est repris du `base/` livré avec le moteur, dont les `.def` et `.script`
+sont ceux de Doom 3 et ne font pas partie de la publication GPL d'id. Les deux
+dossiers `retro/`, modèles et textures, ne sont pas versionnés et ne sont pas
+à nous : ils sortent du Retro Weapon Pack (plus haut).
 
 | Contenu | Outil | Entré en |
 | --- | --- | --- |
@@ -84,6 +101,10 @@ et ne font pas partie de la publication GPL d'id.
 | Lumières par défaut, grille de test | écrites à la main, images générées | M1 |
 | Textures de développement (teintes et trame d'un mètre) | `tools/textures/make_dev_textures.py` | M2 |
 | Cartes `test_box`, `migration_room`, `move_test` | `tools/maps/` | M1, M2 |
+| Cible d'entraînement, trou de balle | `tools/textures/make_dev_textures.py` | M3 |
+| Sons du fusil, des impacts et de la cible | `tools/sounds/make_weapon_sounds.py`, synthèse à graine fixe | M3 |
+| Comportement du fusil, événements du moteur déclarés pour les scripts | `content/script/`, écrits à la main | M3 |
+| Tables de sinus et de cosinus que demande `rotate` | `content/materials/engine.mtr`, calculées | M3 |
 
 Les teintes des textures de développement sont celles arrêtées pour l'immeuble
 du prototype : des valeurs, pas des images reprises.

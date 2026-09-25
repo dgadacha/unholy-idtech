@@ -6,6 +6,7 @@
 #   tools/movetest.sh                         les six scenarios courts
 #   tools/movetest.sh endurance               un seul scenario
 #   tools/movetest.sh tout +pm_accelmode 0    avec un reglage change
+#   tools/movetest.sh tir                     le fusil, dans la migration room
 #
 # Le jeu ecrit son journal ligne a ligne (logFile 2) ; le script le lit et
 # arrete le jeu a la fin du banc. Il ne passe pas par `quit` : sous macOS, la
@@ -25,6 +26,15 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SCENARIO="${1:-tout}"
 shift || true
 
+# Le tir se juge face a une cible : celle de la piece principale de la
+# migration room, a cinq metres.
+MAP=move_test
+PLACE=()
+if [ "$SCENARIO" = tir ]; then
+	MAP=migration_room
+	PLACE=(+setviewpos 56 0 66 23 +wait 30)
+fi
+
 SAVE_DIR="$HOME/Library/Application Support/UNHOLY/content"
 LOG_NAME="movetest.log"
 LOG="$SAVE_DIR/$LOG_NAME"
@@ -38,8 +48,13 @@ rm -f "$LOG"
 # son tour s'ecrit `+nom valeur`. Les reglages passes au script arrivent
 # ainsi apres le chargement de la carte, donc apres ceux que le militaire
 # applique a son apparition, et les remplacent.
+#
+# Sans son : le banc tire (scenario tir), et ses essais n'ont rien a faire
+# dans les haut-parleurs. Pour ecouter le mixage sans le jouer, voir
+# docs/DEBUG.md.
 "$ROOT/tools/run.sh" +set logFile 2 +set logFileName "$LOG_NAME" +set com_smp 0 \
-	+map move_test +wait 120 "$@" +unholy_moveTest "$SCENARIO" > /dev/null 2>&1 &
+	+set s_noSound 1 \
+	+map "$MAP" +wait 120 ${PLACE[@]+"${PLACE[@]}"} "$@" +unholy_moveTest "$SCENARIO" > /dev/null 2>&1 &
 GAME=$!
 
 finished=0

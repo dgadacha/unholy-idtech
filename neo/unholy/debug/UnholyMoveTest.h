@@ -36,6 +36,8 @@ struct unholyMoveSample_t
 	bool			crouching;
 	float			eyeHeight;
 	float			stamina;		// secondes de course
+	int				clip;			// cartouches dans l'arme, -1 sans arme
+	int				reserve;		// cartouches en reserve
 };
 
 // Ce que le banc demande au joueur pour l'image a venir.
@@ -43,8 +45,10 @@ struct unholyMoveDrive_t
 {
 	int				forward;		// -127 .. 127
 	int				right;
-	int				buttons;		// BUTTON_RUN, BUTTON_CROUCH, BUTTON_JUMP
+	int				buttons;		// BUTTON_RUN, BUTTON_CROUCH, BUTTON_JUMP, BUTTON_ATTACK, BUTTON_ZOOM
+	int				impulse;		// une commande a donner a cette image, 0 sinon
 	float			yawDelta;		// degres a ajouter au lacet de la vue
+	float			pitch;			// inclinaison de la vue a tenir, en degres (vers le bas)
 	bool			resetToStart;	// replacer le joueur au depart, arrete
 };
 
@@ -121,6 +125,8 @@ private:
 	int				fullSprintEnd;
 	int				walkReached;
 	int				staminaFull;
+	int				clipStart;
+	int				reserveStart;
 };
 
 #endif /* !__UNHOLY_MOVETEST_H__ */

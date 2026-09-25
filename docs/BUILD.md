@@ -9,6 +9,8 @@ Xcode et clang 17, CMake 4.4. Le moteur est RBDOOM-3-BFG 1.6.0, commit
 ```bash
 # Outils de compilation et bibliothèques
 brew install cmake ispc openal-soft sdl2
+# Conversion du pack d'armes (346 Mo, sans droits d'administrateur)
+brew install --cask blender
 ```
 
 Le **SDK Vulkan de LunarG** est obligatoire : il est le seul à fournir DXC, le
@@ -32,6 +34,22 @@ unzip vulkansdk.zip
 git submodule update --init --recursive --depth 1
 ```
 
+Le fusil et les bras viennent du **Retro Weapon Pack**, qui n'est pas dans le
+dépôt ([`LICENSES.md`](LICENSES.md)). Une fois l'archive téléchargée, on la
+convertit pour le moteur :
+
+```bash
+tools/assets/build_retro_weapons.sh ~/Downloads/RetroWeaponPack_V1.zip
+```
+
+Sept secondes. Le script ouvre dans Blender, sans fenêtre, la scène animée des
+bras et du fusil, rejoue chaque animation image par image, réunit les deux
+squelettes en un seul, passe des centimètres aux pouces et exporte un glTF
+que le moteur lit tel quel. Il dépose le résultat dans `content/models/retro`
+et `content/textures/retro`, deux dossiers ignorés par git. Sans eux, le jeu
+démarre, mais le militaire n'a pas d'arme à la main. On le relance après avoir
+changé `tools/assets/`.
+
 ## À chaque fois
 
 ```bash
@@ -51,17 +69,18 @@ tools/run.sh +dmap migration_room +dmap move_test +dmap test_box +quit
 ```
 
 Les trois cartes sont écrites par des scripts (`tools/maps/`), les textures
-de développement aussi (`tools/textures/`). On les relance après avoir changé
-une cote ou une teinte :
+de développement et les sons aussi (`tools/textures/`, `tools/sounds/`). On
+les relance après avoir changé une cote, une teinte ou un son :
 
 ```bash
 python3 tools/maps/make_migration_room.py
 python3 tools/textures/make_dev_textures.py
+python3 tools/sounds/make_weapon_sounds.py
 ```
 
 | Carte | Rôle |
 | --- | --- |
-| `migration_room` | La carte du brief : une pièce, un couloir, une porte, une lumière fixe, un néon, une zone sombre |
+| `migration_room` | La carte du brief : une pièce, un couloir, une porte, une lumière fixe, un néon, une zone sombre, et trois cibles |
 | `move_test` | L'aire d'essai du déplacement, 65 m de côté, escalier, obstacles, passage bas, pentes |
 | `test_box` | La boîte de la milestone 1 |
 
@@ -99,17 +118,19 @@ dans `patches/`, un fichier par raison, appliqué par `tools/build.sh`.
 | `0006-physique-joueur-reglable` | L'accélération, le frottement, le seuil d'arrêt et le contrôle en l'air du joueur étaient des constantes : ils deviennent des variables `pm_`, aux mêmes valeurs par défaut. Et le second calcul d'accélération, déjà écrit par id et coupé par un `#if`, devient un choix (`pm_accelmode`). |
 | `0007-interface-du-joueur-surchargeable` | `idPlayer::DrawHUD` devient virtuelle : le joueur d'UNHOLY dessine sa propre interface. |
 | `0008-battement-de-coeur-sans-son` | Quand l'endurance baisse, le cœur accélère et son volume se réglait sur l'émetteur sonore du joueur sans vérifier qu'il existe. Un joueur qui n'a encore joué aucun son n'en a pas : le jeu tombait dès la première course. |
+| `0009-balancement-arme-reglable` | L'arme tenue en main se balance au pas et dérive au repos, par des mouvements calculés en dur. Deux clés de l'arme, `weaponBobScale` et `weaponDriftScale`, les dosent (défaut 1, le comportement d'origine) : les animations du fusil respirent et marchent déjà, les deux s'ajoutaient. |
 
-Le joueur d'UNHOLY hérite de celui du moteur : les correctifs 0002 et 0003
-restent nécessaires tant qu'il n'a ni arme ni lampe, c'est-à-dire jusqu'aux
-milestones 3 et 4. Les 0002 et 0008 corrigent de vrais défauts, qui méritent
-d'être proposés en amont à RBDOOM.
+Le joueur d'UNHOLY hérite de celui du moteur. Depuis la milestone 3, il porte
+son fusil : le chemin du correctif 0002 ne se présente plus en jeu, mais le
+correctif reste, il corrige un vrai défaut. Le 0003 reste nécessaire jusqu'à
+la lampe du fusil, milestone 4. Les 0002 et 0008 méritent d'être proposés en
+amont à RBDOOM.
 
 **Défaut connu, non corrigé** : `idWeapon::Save` écrit aussi la déclaration de
 l'arme sans la vérifier. La sauvegarde automatique de début de niveau est
-coupée dans `content/default.cfg` — c'est un choix de conception : une partie
-de dix minutes à une vie n'a rien à reprendre. L'arme d'UNHOLY aura toujours
-une déclaration, le chemin ne se présentera plus.
+coupée dans `content/default.cfg`, par choix de conception : une partie de dix
+minutes à une vie n'a rien à reprendre. L'arme d'UNHOLY a maintenant une
+déclaration, le chemin ne se présente plus.
 
 ## Ce que le moteur exige pour démarrer sans Doom 3
 
@@ -121,30 +142,38 @@ a été relevé en lançant le moteur et en lisant sa console, un manque à la f
 | Police par défaut | `content/newfonts/Unholy/48.dat` + `.tga` | générée, `tools/fontgen` |
 | Jeu de caractères de la console | `content/textures/bigchars.tga` | généré |
 | Commandes par défaut | `content/default.cfg` | écrit à la main |
-| Matières exigées par le moteur | `content/materials/engine.mtr` | `_default`, `_white`, `_black`, `_tracemodel` |
+| Matières exigées par le moteur | `content/materials/engine.mtr` | `_default`, `_white`, `_black`, `_tracemodel` ; les tables `sinTable` et `cosTable`, sans lesquelles toute matière qui tourne (`rotate`) est abandonnée |
 | Lumières par défaut | `content/materials/lights.mtr`, `content/lights/*.tga` | générées |
 | Blanc des interfaces | `content/guis/assets/white.tga` | généré |
-| Scripts de base | `content/script/doom_defs.script`, `doom_main.script` | vides, à dessein |
+| Scripts de base | `content/script/doom_defs.script`, `doom_main.script` | le strict nécessaire : `true` et `false`, que le langage n'a pas, et l'inclusion de nos scripts |
+| Événements du moteur | `content/script/unholy_events.script` | déclarés un à un : un script ne connaît que ceux qu'on lui déclare |
 | Variables d'état du joueur | `content/script/unholy_player.script` | déclarations seules |
+| Comportement de l'arme | `content/script/weapon_unholy_rifle.script` | `idWeapon` n'avance pas sans son objet de script |
 | Entités de base | `content/def/unholy_base.def` | monde, départ, lumière, porte, joueur |
 | Règles appelées par leur nom | `content/def/unholy_rules.def` | munitions, dégâts |
 
 Ce qui manque encore et ne bloque rien : les interfaces SWF de BFG (menu,
 HUD, écran de chargement), les icônes de manettes, les écrans légaux, le modèle
-du joueur et ses os. Le menu et le HUD d'UNHOLY seront les nôtres. Le modèle
-du militaire n'a pas encore de source : la vue à la première personne n'en a
-pas besoin, les bras viendront avec le fusil.
+du joueur et ses os. Le menu et le HUD d'UNHOLY seront les nôtres ; le
+réticule et le compteur de munitions le sont déjà, dessinés par le joueur. Le
+modèle du militaire n'a pas encore de source : la vue à la première personne
+n'en a pas besoin, ses bras sont ceux du fusil. Faute de corps, le moteur
+signale à chaque carte trois os introuvables (`bone_hips`, `bone_chest`,
+`bone_head`) : c'est attendu.
 
 ## Vérifier
 
 ```bash
 tools/movetest.sh
+tools/movetest.sh tir
 ```
 
 Le banc d'essai du déplacement lance le jeu dans `move_test`, fait jouer six
 scénarios au militaire et imprime ses mesures, à comparer à celles de
 [`FEEL.md`](FEEL.md), § 8. Une quarantaine de secondes ; la fenêtre du jeu ne
-doit pas perdre le focus pendant ce temps.
+doit pas perdre le focus pendant ce temps. Le scénario `tir` tire une rafale,
+une rafale épaulée et recharge, et relève le chargeur à chaque étape
+(§ 9). Le banc tourne sans son.
 
 Les captures d'écran (`F12`, ou `screenshot` à la console) arrivent dans
 `~/Library/Application Support/UNHOLY/content/screenshots/`.

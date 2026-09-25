@@ -39,7 +39,8 @@ viendra avec la milestone 6 : rien de natif ne le couvre.
 | `F3`, ou `toggle unholy_showMove` | le relevé du déplacement, en haut à gauche : vitesse en m/s et en unités, allure, endurance, attente avant le prochain saut, hauteur des yeux |
 | `unholy_logMove 1` | le déplacement imprimé à chaque image : position, vitesse, chute, allure |
 | `unholy_moveTest <scénario>` | le banc d'essai : il pilote le joueur par gestes fixes et imprime ses mesures. Un nom inconnu liste les scénarios |
-| `tools/movetest.sh [scénario] [+réglage valeur ...]` | le banc depuis le terminal, dans l'aire `move_test` |
+| `tools/movetest.sh [scénario] [+réglage valeur ...]` | le banc depuis le terminal, dans l'aire `move_test`, sans son |
+| `tools/movetest.sh tir` | le fusil : une rafale, une rafale épaulée, un rechargement, face à la cible de la migration room ; le chargeur et la réserve relevés à chaque étape |
 
 Le banc prend le clavier et la souris, replace le joueur au départ entre deux
 scénarios, arrêté, endurance pleine. Ses chiffres sont consignés dans
@@ -49,10 +50,38 @@ scénarios, arrêté, endurance pleine. Ses chiffres sont consignés dans
 tools/movetest.sh tout +pm_accelmode 0
 ```
 
+## Écouter le mixage sans le jouer
+
+Les essais tournent sans son (`+set s_noSound 1`) : un banc qui tire n'a rien
+à faire dans les haut-parleurs. Mais sans son, le moteur ne charge aucun
+fichier, et rien ne dit si les sons partent, quand, et à quel niveau.
+
+Le moteur joue par OpenAL Soft, qui sait écrire son mixage dans un fichier au
+lieu de la carte son. Un fichier de réglages le lui demande :
+
+```ini
+# alsoft.ini
+[general]
+drivers = wave
+
+[wave]
+file = /chemin/vers/mixage.wav
+```
+
+```bash
+ALSOFT_CONF=alsoft.ini ALSOFT_DRIVERS=wave tools/run.sh +set logFile 2 +set com_smp 0 \
+	+map migration_room +wait 120 +setviewpos 56 0 66 23 +wait 30 +unholy_moveTest tir
+```
+
+Le journal doit dire `No capture backend available`, le signe que seule la
+sortie fichier est ouverte. Le fichier grossit en temps réel, en 32 bits
+flottants, stéréo, 48 kHz ; au-delà de 1, le son saturerait. C'est ainsi
+qu'ont été réglés les volumes du fusil ([`FEEL.md`](FEEL.md), § 9).
+
 ## Pièges du moteur, déjà payés
 
-Ils ont tous coûté du temps pendant la milestone 2. Ils valent pour tout essai
-automatique.
+Ils ont tous coûté du temps, pendant les milestones 2 et 3. Ils valent pour
+tout essai automatique.
 
 - **`+set` s'applique au démarrage, avant tout le reste.** Le moteur exécute
   tous les `+set` de la ligne de commande d'abord, quel que soit leur rang.
@@ -85,3 +114,43 @@ automatique.
 - **Une entité faite de brushes doit porter une clé `model`** égale à son nom.
   Sans elle, elle existe mais n'a ni image ni collision : une porte devient
   un trou. `tools/maps/mapkit.py` l'ajoute.
+- **Pas plus de 32 commandes `+` sur la ligne de commande.** Le moteur les
+  range dans un tableau de 32 places sans vérifier, et plante au démarrage
+  au-delà, avant d'avoir rien écrit. Une suite de captures passe par un
+  `.cfg` déposé dans `~/Library/Application Support/UNHOLY/content/` et lancé
+  par `+exec`.
+- **La sortie standard redirigée arrive par paquets.** Un essai qui attend
+  une ligne sur la sortie standard l'attend pour rien, et l'arrêt du jeu la
+  perd. Attendre sur le journal (`+set logFile 2`), écrit ligne à ligne.
+- **Une capture d'écran dure environ 200 ms**, pendant lesquelles le jeu
+  continue. Une suite de `screenshot` séparés d'une image donne une image
+  tous les cinq ou six pas de jeu, pas des images consécutives.
+- **`rotate` dans une matière demande les tables `sinTable` et `cosTable`.**
+  Sans elles, la matière est abandonnée et ne dessine plus rien, avec pour seul
+  message `no sinTable for rotate defined`, qui ne nomme pas la matière. Elles
+  sont dans `content/materials/engine.mtr`.
+- **Le blanc et le noir du moteur doivent se mélanger** (`blend blend`,
+  `colored`) pour servir en 2D. Déclarés comme une simple image, `_white`
+  dessinait un réticule invisible.
+- **Un script ne connaît que les événements qu'on lui déclare.** Doom 3 les
+  déclarait tous dans ses propres scripts ; les nôtres les déclarent un à un
+  (`content/script/unholy_events.script`), sinon la compilation échoue sur
+  `Unknown value`. Le langage n'a pas non plus `true` ni `false`
+  (`doom_defs.script` les définit), et ne compare pas deux booléens : une
+  variable que le code C++ écrit est un nombre.
+- **`idWeapon` n'avance pas sans script.** L'arme du moteur tient son
+  automate d'états dans un objet de script ; c'est là que vit le comportement
+  du fusil, les valeurs restant dans sa déclaration.
+- **La première recharge du chargeur vient de deux endroits** : la
+  déclaration du joueur (`clip0`) et celle de l'arme. Sans `clip0`, le moteur
+  remplit le chargeur deux fois sur la réserve, et la partie commence avec
+  60 cartouches de réserve au lieu de 90.
+- **Une animation glTF a besoin d'une piste sur l'os racine**, sans quoi le
+  moteur ne la trouve pas (`Could not find action`). Mais une rotation ou une
+  translation sur cette racine le fait passer par un chemin qui compose deux
+  fois les rotations : l'arme sort à l'envers, dans la main gauche. La
+  conversion ne laisse donc à la racine qu'une piste d'échelle, immobile
+  (`tools/assets/retro_rifle.py`, `root_scale_only`).
+- **Sans corps, le militaire fait signaler trois os** (`bone_hips`,
+  `bone_chest`, `bone_head`) à chaque carte. C'est attendu, jusqu'à ce qu'il
+  ait un modèle.

@@ -81,7 +81,12 @@ Trois règles de conduite qui en découlent, et qui pèsent sur l'architecture :
 1. **La frontière passe entre le code et les données, pas ailleurs.** D'où la
    séparation ci-dessous, et le choix de mettre la logique de jeu en C++ plutôt
    qu'en `.script` : la logique est de toute façon GPL, autant qu'elle soit là
-   où c'est clair, et garder `base/` pour du contenu.
+   où c'est clair, et garder `base/` pour du contenu. Une exception, imposée
+   par le moteur : `idWeapon` tient son automate d'états dans un objet de
+   script, et n'avance pas sans lui. Le fusil a donc son `.script`
+   (milestone 3), réduit à un aiguillage : quand tirer, recharger, épauler,
+   quelle animation jouer. Les valeurs restent dans sa déclaration, les
+   règles de déplacement dans le C++.
 2. **Jamais un octet de Doom 3 ou de Doom 3 BFG dans le jeu distribuable.**
    Localement, pour vérifier que le moteur tourne, c'est autre chose ; ça ne
    franchit pas la porte.
@@ -219,6 +224,25 @@ dans le moteur, mieux faites, et c'est la raison de la migration.
 | Wall / ceiling crawl | **Rien de natif** — physique dédiée | **Créer** | brief §12 | **Très élevée** | M6 |
 | IA militaire, IA possédé | `idAI` + `idAAS` | **Créer** | brief §16-17 | Élevée | M10-11 |
 
+Ce que la milestone 3 a fait autrement que prévu :
+
+- **La prise en main, la respiration et le balancement viennent des
+  animations du Retro Weapon Pack**, fusil et bras ensemble, et non des
+  valeurs du prototype : le pack dessine la pose, et le balancement du moteur
+  est coupé (correctif 0009) pour ne pas s'y ajouter. L'inertie du regard et
+  le recul restent ceux d'`idWeapon`, réglés dans la déclaration du fusil.
+- **L'épaulé passe par les organes de visée du pack**, pas par une optique :
+  le fusil n'a pas de viseur holographique. Le brief en demande un ; il reste
+  à faire.
+- **Le HUD n'est pas un `.gui`.** Le joueur d'UNHOLY dessine son réticule et
+  son compteur de munitions en C++ (correctif 0007) : les interfaces de BFG
+  sont des SWF que nous n'avons pas, et deux éléments ne justifient pas encore
+  un système d'interface. La santé et le voile de blessure viendront avec les
+  dégâts reçus.
+- **Le tir est un projectile très rapide, pas un tir instantané** : `idWeapon`
+  n'a pas de hitscan en solo. À 120 000 unités par seconde, la balle traverse
+  un couloir de vingt mètres dans l'image du tir.
+
 ### 3.3 Décor — le cas particulier
 
 L'immeuble n'est pas un fichier : c'est **du code** (`building.ts`, 612 lignes)
@@ -334,7 +358,7 @@ L'ordre du brief, avec deux ajouts en fin de course.
 | 0 | **Audit** — ce document. | fait |
 | 1 | Compiler et lancer UNHOLY en jeu autonome. | fait |
 | 2 | Migration room et contrôleur joueur. | fait |
-| 3 | Fusil, viewmodel, tir. | |
+| 3 | Fusil, viewmodel, tir. | fait |
 | 4 | Lampe, éclairage, ombres. | |
 | 5 | Possédé au sol. | |
 | 6 | Wall / ceiling crawl, sur sa propre map. | |

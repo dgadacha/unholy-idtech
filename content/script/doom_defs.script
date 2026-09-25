@@ -7,13 +7,16 @@
 	d'ordinaire les constantes qui doivent refleter celles du C++, contenus
 	de collision, directions, axes.
 
-	UNHOLY n'a pas encore de script : ce fichier se remplira le jour ou un
-	script en aura besoin, et chaque constante y sera recopiee depuis le C++,
-	jamais depuis les scripts de Doom 3.
+	UNHOLY n'y met que ce dont ses scripts ont besoin, et chaque constante y
+	est recopiee depuis le C++, jamais depuis les scripts de Doom 3.
 
 ***********************************************************************/
 
 #ifndef __DOOM_DEFS__
 #define __DOOM_DEFS__
+
+// Le langage n'a pas de booleens litteraux : Doom 3 les definissait ici.
+#define	true	1
+#define	false	0
 
 #endif

@@ -14,3 +14,8 @@ content/generated/
 
 # Cache de Python, laisse par les scripts de cartes.
 __pycache__/
+
+# Armes du Retro Weapon Pack, converties sur place par
+# tools/assets/build_retro_weapons.sh : le pack ne se redistribue pas.
+content/models/retro/
+content/textures/retro/

@@ -237,6 +237,63 @@ Version 3
 }
 // entity 4
 {
+"classname" "unholy_target"
+"name" "target_room"
+"origin" "200 62 0"
+"model" "target_room"
+// primitive 0
+ {
+  brushDef3
+  {
+   ( 1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( -1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 -1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 1 -66 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+  }
+ }
+}
+// entity 5
+{
+"classname" "unholy_target"
+"name" "target_neon"
+"origin" "560 -18 0"
+"model" "target_neon"
+// primitive 0
+ {
+  brushDef3
+  {
+   ( 1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( -1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 -1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 1 -66 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+  }
+ }
+}
+// entity 6
+{
+"classname" "unholy_target"
+"name" "target_dark"
+"origin" "826 16 0"
+"model" "target_dark"
+// primitive 0
+ {
+  brushDef3
+  {
+   ( 1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( -1 0 0 -0.75 ) ( ( 0.04166667 0 0.5 ) ( 0 0.01515152 1 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 -1 0 -12 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 1 -66 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+   ( 0 0 -1 0 ) ( ( 0.02540005 0 0 ) ( 0 0.02540005 0 ) ) "textures/unholy/dev/target" 0 0 0
+  }
+ }
+}
+// entity 7
+{
 "classname" "info_player_start"
 "name" "start_military"
 "origin" "56 0 1"

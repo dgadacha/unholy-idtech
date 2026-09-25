@@ -1,0 +1,102 @@
+/*
+	UNHOLY -- sons du fusil, des impacts et de la cible
+
+	Synthetises par tools/sounds/make_weapon_sounds.py. Les distances sont en
+	metres : en deca de minDistance le son est plein, au-dela de maxDistance il
+	s'est tu. Plusieurs fichiers pour un meme son : le moteur en tire un au
+	hasard, et no_dups evite deux fois le meme de suite.
+
+	Les volumes sont en decibels. Les fichiers sont tous normalises au meme
+	niveau, et le moteur n'attenue guere un son entre minDistance et
+	maxDistance (3 dB a cinq metres) : sans ces reglages, le tir, l'impact et le
+	choc sur la cible s'additionnaient et la rafale saturait. L'arme a l'oreille
+	domine, ce qu'elle touche reste en retrait.
+*/
+
+unholy_rifle_fire
+{
+	volume		-3
+	minDistance	3
+	maxDistance	80
+	no_dups
+	sound/unholy/weapons/rifle_fire_1.wav
+	sound/unholy/weapons/rifle_fire_2.wav
+	sound/unholy/weapons/rifle_fire_3.wav
+}
+
+unholy_rifle_dry
+{
+	minDistance	1
+	maxDistance	10
+	sound/unholy/weapons/rifle_dry.wav
+}
+
+unholy_rifle_magout
+{
+	minDistance	1
+	maxDistance	15
+	sound/unholy/weapons/rifle_magout.wav
+}
+
+unholy_rifle_magin
+{
+	minDistance	1
+	maxDistance	15
+	sound/unholy/weapons/rifle_magin.wav
+}
+
+unholy_rifle_chargepull
+{
+	minDistance	1
+	maxDistance	15
+	sound/unholy/weapons/rifle_chargepull.wav
+}
+
+unholy_rifle_chargerelease
+{
+	minDistance	1
+	maxDistance	15
+	sound/unholy/weapons/rifle_chargerelease.wav
+}
+
+unholy_impact_stone
+{
+	volume		-8
+	minDistance	1
+	maxDistance	25
+	no_dups
+	sound/unholy/impacts/stone_1.wav
+	sound/unholy/impacts/stone_2.wav
+}
+
+unholy_impact_metal
+{
+	volume		-8
+	minDistance	1
+	maxDistance	30
+	sound/unholy/impacts/metal.wav
+}
+
+unholy_impact_wood
+{
+	volume		-8
+	minDistance	1
+	maxDistance	25
+	sound/unholy/impacts/wood.wav
+}
+
+unholy_target_hit
+{
+	volume		-6
+	minDistance	1
+	maxDistance	25
+	sound/unholy/target/hit.wav
+}
+
+unholy_target_fall
+{
+	volume		-4
+	minDistance	1
+	maxDistance	30
+	sound/unholy/target/fall.wav
+}

@@ -46,6 +46,7 @@ UnholyPlayer::UnholyPlayer()
 	jumpReadyTime = 0;
 	jumpLatched = false;
 	runAtTakeoff = false;
+	aiming = false;
 	testYaw = 0.0f;
 }
 
@@ -136,6 +137,7 @@ void UnholyPlayer::Think()
 
 	RunMoveTest();
 	ApplyMovementRules( onGround );
+	UpdateWeaponScript();
 
 	idPlayer::Think();
 
@@ -161,9 +163,14 @@ Les commandes du joueur passent par ici avant d'atteindre le moteur.
 */
 void UnholyPlayer::ApplyMovementRules( bool onGround )
 {
-	// Course : vers l'avant seulement. Et l'allure prise au decollage tient
-	// jusqu'a la reception : on ne se relance pas en l'air.
+	// Course : vers l'avant seulement, et jamais en tirant ni en epaulant. Et
+	// l'allure prise au decollage tient jusqu'a la reception : on ne se relance
+	// pas en l'air.
 	if( pm_sprintforwardonly.GetBool() && usercmd.forwardmove <= 0 )
+	{
+		usercmd.buttons &= ~BUTTON_RUN;
+	}
+	if( usercmd.buttons & ( BUTTON_ATTACK | BUTTON_ZOOM ) )
 	{
 		usercmd.buttons &= ~BUTTON_RUN;
 	}
@@ -242,6 +249,66 @@ void UnholyPlayer::Landed( const idVec3& velocityBeforeLanding )
 
 /*
 ==============
+UnholyPlayer::WeaponGait
+
+C'est elle qui choisit l'animation de l'arme, et la dispersion du tir.
+==============
+*/
+UnholyPlayer::weaponGait_t UnholyPlayer::WeaponGait() const
+{
+	const idPhysics_Player* physics = PlayerPhysics();
+	const idVec3& down = physics->GetGravityNormal();
+	const idVec3 velocity = physics->GetLinearVelocity();
+	const float speed = ( velocity - ( velocity * down ) * down ).Length();
+	const bool moving = speed > 10.0f;
+
+	if( physics->IsCrouching() )
+	{
+		return moving ? GAIT_CROUCH_WALK : GAIT_CROUCH_IDLE;
+	}
+	if( !moving )
+	{
+		return GAIT_IDLE;
+	}
+	if( ( usercmd.buttons & BUTTON_RUN ) && speed > pm_walkspeed.GetFloat() + 5.0f )
+	{
+		return GAIT_RUN;
+	}
+	return GAIT_WALK;
+}
+
+/*
+==============
+UnholyPlayer::UpdateWeaponScript
+
+Le script de l'arme lit deux variables que le moteur ne connait pas : on les
+lui ecrit ici, avant que l'arme ne pense. Une arme dont le script ne les
+declare pas les ignore.
+==============
+*/
+void UnholyPlayer::UpdateWeaponScript()
+{
+	aiming = ( usercmd.buttons & BUTTON_ZOOM ) != 0 && WeaponGait() != GAIT_RUN;
+
+	idWeapon* gun = weapon.GetEntity();
+	if( gun == NULL || !gun->scriptObject.HasObject() )
+	{
+		return;
+	}
+	byte* aim = gun->scriptObject.GetVariable( "UNHOLY_AIM", ev_float );
+	if( aim != NULL )
+	{
+		*reinterpret_cast<float*>( aim ) = aiming ? 1.0f : 0.0f;
+	}
+	byte* gait = gun->scriptObject.GetVariable( "UNHOLY_GAIT", ev_float );
+	if( gait != NULL )
+	{
+		*reinterpret_cast<float*>( gait ) = static_cast<float>( WeaponGait() );
+	}
+}
+
+/*
+==============
 UnholyPlayer::RunMoveTest
 
 Le banc d'essai prend la place du clavier et de la souris : il donne les
@@ -293,11 +360,16 @@ void UnholyPlayer::RunMoveTest()
 		jumpLatched = false;
 	}
 	testYaw += drive.yawDelta;
-	SetViewAngles( idAngles( 0.0f, testYaw, 0.0f ) );
+	SetViewAngles( idAngles( drive.pitch, testYaw, 0.0f ) );
 
 	usercmd.forwardmove = drive.forward;
 	usercmd.rightmove = drive.right;
-	usercmd.buttons = ( usercmd.buttons & ~( BUTTON_RUN | BUTTON_CROUCH | BUTTON_JUMP ) ) | drive.buttons;
+	usercmd.buttons = ( usercmd.buttons & ~( BUTTON_RUN | BUTTON_CROUCH | BUTTON_JUMP | BUTTON_ATTACK | BUTTON_ZOOM ) ) | drive.buttons;
+	if( drive.impulse != 0 )
+	{
+		usercmd.impulse = drive.impulse;
+		usercmd.impulseSequence++;
+	}
 }
 
 /*
@@ -323,6 +395,9 @@ void UnholyPlayer::MeasureMoveTest()
 	sample.crouching = physics->IsCrouching();
 	sample.eyeHeight = EyeHeight();
 	sample.stamina = stamina;
+	const idWeapon* gun = weapon.GetEntity();
+	sample.clip = gun != NULL ? gun->AmmoInClip() : -1;
+	sample.reserve = gun != NULL ? gun->AmmoAvailable() : -1;
 	moveTest.Measure( sample );
 }
 
@@ -384,10 +459,72 @@ void UnholyPlayer::DrawHUD( idMenuHandler_HUD* hudManager )
 {
 	idPlayer::DrawHUD( hudManager );
 
+	if( g_showHud.GetBool() && health > 0 && !spectating )
+	{
+		DrawWeaponHud();
+	}
 	if( unholy_showMove.GetBool() )
 	{
 		DrawMovementReadout();
 	}
+}
+
+/*
+==============
+UnholyPlayer::DrawWeaponHud
+
+Le reticule et les munitions, rien d'autre. Le reticule s'ouvre avec la
+dispersion du tir, et disparait quand on epaule (la visee du fusil prend le
+relais), qu'on court ou qu'on recharge.
+==============
+*/
+void UnholyPlayer::DrawWeaponHud() const
+{
+	const idWeapon* gun = weapon.GetEntity();
+	if( gun == NULL )
+	{
+		return;
+	}
+
+	const float width = renderSystem->GetVirtualWidth();
+	const float height = renderSystem->GetVirtualHeight();
+	const idMaterial* white = declManager->FindMaterial( "_white" );
+	const weaponGait_t gait = WeaponGait();
+
+	if( !aiming && gait != GAIT_RUN && !gun->IsReloading() )
+	{
+		// L'ecart des branches : l'angle de dispersion rapporte au champ de vision.
+		float spread = gun->spawnArgs.GetFloat( "spread_hip" );
+		if( gait == GAIT_WALK || gait == GAIT_CROUCH_WALK )
+		{
+			spread += gun->spawnArgs.GetFloat( "spread_move" );
+		}
+		const float halfFov = DEG2RAD( g_fov.GetFloat() * 0.5f );
+		const float gap = Max( 2.0f, idMath::Tan( DEG2RAD( spread ) ) / idMath::Tan( halfFov ) * width * 0.5f );
+		const float length = 5.0f;
+		const float thick = 1.0f;
+		const float cx = width * 0.5f;
+		const float cy = height * 0.5f;
+
+		renderSystem->SetColor4( 0.92f, 0.9f, 0.84f, 0.8f );
+		renderSystem->DrawStretchPic( cx - gap - length, cy - thick * 0.5f, length, thick, 0, 0, 1, 1, white );
+		renderSystem->DrawStretchPic( cx + gap, cy - thick * 0.5f, length, thick, 0, 0, 1, 1, white );
+		renderSystem->DrawStretchPic( cx - thick * 0.5f, cy - gap - length, thick, length, 0, 0, 1, 1, white );
+		renderSystem->DrawStretchPic( cx - thick * 0.5f, cy + gap, thick, length, 0, 0, 1, 1, white );
+	}
+
+	// Les munitions, en bas a droite : le chargeur, puis la reserve.
+	const int clip = gun->AmmoInClip();
+	const int reserve = gun->AmmoAvailable();
+	const idVec4 color = clip > gun->spawnArgs.GetInt( "lowAmmo", "8" ) ? idVec4( 0.92f, 0.9f, 0.84f, 0.85f ) : idVec4( 1.0f, 0.55f, 0.35f, 0.9f );
+	const idStr clipText = va( "%d", clip );
+	const idStr reserveText = va( "/ %d", reserve );
+	const int right = static_cast<int>( width ) - 24;
+	const int bottom = static_cast<int>( height ) - 30;
+	const int reserveX = right - reserveText.Length() * SMALLCHAR_WIDTH;
+	renderSystem->DrawSmallStringExt( reserveX, bottom + BIGCHAR_HEIGHT - SMALLCHAR_HEIGHT, reserveText.c_str(), idVec4( 0.8f, 0.78f, 0.72f, 0.7f ), true );
+	renderSystem->DrawBigStringExt( reserveX - 6 - clipText.Length() * BIGCHAR_WIDTH, bottom, clipText.c_str(), color, true );
+	renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 /*

@@ -1,0 +1,65 @@
+/*
+	UNHOLY -- matieres du fusil et des bras (Retro Weapon Pack)
+
+	Les images viennent du pack et sont converties sur place par
+	tools/assets/build_retro_weapons.sh ; elles ne sont pas dans le depot. Ces
+	declarations, elles, sont a nous.
+
+	Le Readme du pack le demande : des pixels nets, ni filtrage ni compression,
+	rugosite pleine et aucun reflet. `nearest` et `highquality` pour le premier,
+	aucune carte de rugosite ni de reflet pour le second.
+*/
+
+models/retro/rifle
+{
+	qer_editorimage	textures/retro/rifle
+	metal
+	{
+		blend		diffusemap
+		map			textures/retro/rifle
+		nearest
+		highquality
+	}
+}
+
+models/retro/arms
+{
+	qer_editorimage	textures/retro/arms
+	flesh
+	{
+		blend		diffusemap
+		map			textures/retro/arms
+		nearest
+		highquality
+	}
+}
+
+/*
+	L'eclat de tir, porte par l'os "flash" du modele.
+
+	parm4 porte l'heure du dernier tir, que le moteur y inscrit a chaque coup
+	(en negatif), si bien que `time + parm4` est le temps ecoule depuis : la
+	table n'allume l'eclat que pendant les 45 premieres millisecondes. parm5
+	change a chaque coup : l'eclat tourne d'un tir a l'autre (`rotate` a besoin
+	des tables sinTable et cosTable, dans engine.mtr). Plus fort que 1 : la
+	flamme passe par le rendu HDR, et a 1 elle ne faisait qu'un halo.
+*/
+table unholy_muzzleflash { clamp { 1, 0.8, 0 } }
+
+models/retro/muzzleflash
+{
+	qer_editorimage	textures/retro/muzzleflash
+	noShadows
+	translucent
+	twoSided
+	{
+		blend		add
+		map			textures/retro/muzzleflash
+		nearest
+		zeroclamp	// tournee, l'image ne se repete pas dans les coins
+		rotate		parm5
+		red			1.8 * unholy_muzzleflash[ ( time + parm4 ) * 22 ]
+		green		1.4 * unholy_muzzleflash[ ( time + parm4 ) * 22 ]
+		blue		0.9 * unholy_muzzleflash[ ( time + parm4 ) * 22 ]
+	}
+}

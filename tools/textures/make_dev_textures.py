@@ -67,6 +67,49 @@ def door(base, name):
     image.save(OUT / f'{name}.tga', compression='tga_rle')
 
 
+def target(name):
+    """
+    La cible : une silhouette de tete et d'epaules imprimee en noir sur du
+    contreplaque, a plaquer sur la planche entiere.
+    """
+    width, height = 256, 704
+    board = hex_color('#8a7350')
+    image = Image.new('RGB', (width, height), board)
+    draw = ImageDraw.Draw(image)
+    ink = hex_color('#1a1714')
+    # Les epaules et le buste, puis la tete.
+    draw.rounded_rectangle([28, 250, width - 29, height - 1], radius=60, fill=ink)
+    draw.ellipse([78, 70, width - 79, 250], fill=ink)
+    # Deux zones de visee, en trait clair.
+    light = shade(board, 1.1)
+    draw.ellipse([98, 110, width - 99, 210], outline=light, width=3)
+    draw.ellipse([68, 330, width - 69, 530], outline=light, width=3)
+    draw.rectangle([0, 0, width - 1, height - 1], outline=shade(board, 0.7), width=6)
+    image.save(OUT / f'{name}.tga', compression='tga_rle')
+
+
+def bullet_hole(name, size=32):
+    """Un impact : un trou noir, un bord eclate plus clair, le reste transparent."""
+    image = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    pixels = image.load()
+    center = (size - 1) / 2
+    import math
+    for y in range(size):
+        for x in range(size):
+            dx, dy = x - center, y - center
+            radius = math.hypot(dx, dy)
+            angle = math.atan2(dy, dx)
+            # Le bord n'est pas rond : cinq eclats inegaux.
+            edge = 7.5 + 2.2 * math.sin(angle * 5 + 0.7) + 1.1 * math.sin(angle * 3)
+            if radius < 3.2:
+                pixels[x, y] = (8, 7, 6, 255)
+            elif radius < 5.0:
+                pixels[x, y] = (26, 24, 21, 235)
+            elif radius < edge:
+                pixels[x, y] = (72, 68, 62, 150)
+    image.save(OUT.parent / 'decals' / f'{name}.tga', compression='tga_rle')
+
+
 def editor(name, rgba, size=64):
     """Image de l'editeur seulement : le jeu ne la dessine jamais."""
     Image.new('RGBA', (size, size), rgba).save(OUT / f'{name}.tga', compression='tga_rle')
@@ -82,6 +125,9 @@ def main():
     flat('#ffe2bf', 'lamp')         # verre d'un plafonnier allume
     flat('#e6f0f7', 'neon')         # tube fluorescent allume
     editor('visportal', (200, 40, 160, 110))
+    target('target')
+    (OUT.parent / 'decals').mkdir(parents=True, exist_ok=True)
+    bullet_hole('bullet_hole')
     print(f'{OUT.relative_to(ROOT)} : textures de developpement ecrites')
 
 

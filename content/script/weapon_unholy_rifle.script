@@ -1,0 +1,288 @@
+/*
+	UNHOLY -- le fusil du militaire
+
+	L'arme du moteur (idWeapon) exige un objet de script : c'est lui qui dit
+	quand tirer, recharger, epauler, et quelle animation jouer ; le moteur fait
+	le reste. Ce script reste donc un aiguillage. Les valeurs sont dans la
+	declaration de l'arme (def/unholy_weapons.def), les regles de deplacement
+	dans le joueur (neo/unholy/player/UnholyPlayer.cpp).
+
+	Les variables WEAPON_ sont tenues par le moteur (d3xp/Weapon.cpp), les
+	variables UNHOLY_ par le joueur d'UNHOLY, a chaque image.
+*/
+
+#define ANIMCHANNEL_ALL			0
+#define SND_CHANNEL_ANY			0
+#define SND_CHANNEL_WEAPON		6
+
+// Fondus, en images de jeu (60 par seconde).
+#define BLEND_STATE				4
+#define BLEND_CYCLE				8
+#define BLEND_AIM_IN			8		// 0,13 s pour epauler
+#define BLEND_AIM_OUT			6		// 0,10 s pour relacher
+
+// Allures, telles que les donne le joueur.
+#define GAIT_IDLE				0
+#define GAIT_WALK				1
+#define GAIT_RUN				2
+#define GAIT_CROUCH_IDLE		3
+#define GAIT_CROUCH_WALK		4
+
+object weapon_unholy_rifle
+{
+	boolean		WEAPON_ATTACK;
+	boolean		WEAPON_RELOAD;
+	boolean		WEAPON_NETRELOAD;
+	boolean		WEAPON_NETENDRELOAD;
+	boolean		WEAPON_NETFIRING;
+	boolean		WEAPON_RAISEWEAPON;
+	boolean		WEAPON_LOWERWEAPON;
+
+	float		UNHOLY_AIM;			// 1 epaule, 0 a la hanche
+	float		UNHOLY_GAIT;
+
+	float		fire_delay;
+	float		spread_hip;
+	float		spread_aim;
+	float		spread_move;
+	float		next_shot;
+	boolean		trigger_released;
+	string		cycle;
+
+	void		init();
+	void		Raise();
+	void		Lower();
+	void		Idle();
+	void		Fire();
+	void		Reload();
+	void		OwnerDied();
+	void		EnterCinematic();
+	void		ExitCinematic();
+	void		NetCatchup();
+	void		WeaponStolen();
+	void		UpdateSkin();
+
+	string		DesiredCycle();
+	void		PlayDesiredCycle( float blend );
+	boolean		CanFire();
+	boolean		CanReload();
+	float		Spread();
+};
+
+void weapon_unholy_rifle::init()
+{
+	fire_delay = 60 / getFloatKey( "rate_of_fire" );
+	spread_hip = getFloatKey( "spread_hip" );
+	spread_aim = getFloatKey( "spread_aim" );
+	spread_move = getFloatKey( "spread_move" );
+	next_shot = 0;
+	trigger_released = true;
+	cycle = "";
+	weaponState( "Raise", 0 );
+}
+
+// La boucle qui convient a ce que fait le joueur.
+string weapon_unholy_rifle::DesiredCycle()
+{
+	if ( UNHOLY_AIM ) {
+		if ( UNHOLY_GAIT == GAIT_IDLE || UNHOLY_GAIT == GAIT_CROUCH_IDLE ) {
+			return "aim_idle";
+		}
+		return "aim_walk";
+	}
+	if ( UNHOLY_GAIT == GAIT_RUN ) {
+		return "run";
+	}
+	if ( UNHOLY_GAIT == GAIT_WALK ) {
+		return "walk";
+	}
+	if ( UNHOLY_GAIT == GAIT_CROUCH_WALK ) {
+		return "crouch_walk";
+	}
+	if ( UNHOLY_GAIT == GAIT_CROUCH_IDLE ) {
+		return "crouch_idle";
+	}
+	return "idle";
+}
+
+void weapon_unholy_rifle::PlayDesiredCycle( float blend )
+{
+	string wanted;
+
+	wanted = DesiredCycle();
+	if ( wanted != cycle ) {
+		setBlendFrames( ANIMCHANNEL_ALL, blend );
+		playCycle( ANIMCHANNEL_ALL, wanted );
+		cycle = wanted;
+	}
+}
+
+// On ne tire pas en courant : le joueur coupe la course des qu'on tire ou
+// qu'on epaule, et l'arme attend d'etre revenue en main.
+boolean weapon_unholy_rifle::CanFire()
+{
+	if ( ammoInClip() <= 0 ) {
+		return false;
+	}
+	if ( UNHOLY_GAIT == GAIT_RUN ) {
+		return false;
+	}
+	return sys.getTime() >= next_shot;
+}
+
+boolean weapon_unholy_rifle::CanReload()
+{
+	return ammoInClip() < clipSize() && ammoAvailable() > 0;
+}
+
+// Epaule, la balle part ou l'on vise ; a la hanche, un peu autour, et plus
+// encore en marchant.
+float weapon_unholy_rifle::Spread()
+{
+	if ( UNHOLY_AIM ) {
+		return spread_aim;
+	}
+	if ( UNHOLY_GAIT == GAIT_IDLE || UNHOLY_GAIT == GAIT_CROUCH_IDLE ) {
+		return spread_hip;
+	}
+	return spread_hip + spread_move;
+}
+
+void weapon_unholy_rifle::Raise()
+{
+	weaponRising();
+	playAnim( ANIMCHANNEL_ALL, "raise" );
+	while ( !animDone( ANIMCHANNEL_ALL, BLEND_STATE ) ) {
+		waitFrame();
+	}
+	weaponState( "Idle", BLEND_STATE );
+}
+
+void weapon_unholy_rifle::Lower()
+{
+	weaponLowering();
+	playAnim( ANIMCHANNEL_ALL, "putaway" );
+	while ( !animDone( ANIMCHANNEL_ALL, 0 ) ) {
+		waitFrame();
+	}
+	weaponHolstered();
+	while ( !WEAPON_RAISEWEAPON ) {
+		waitFrame();
+	}
+	weaponState( "Raise", 0 );
+}
+
+void weapon_unholy_rifle::Idle()
+{
+	float aimed;
+
+	weaponReady();
+	cycle = "";
+	aimed = UNHOLY_AIM;
+	PlayDesiredCycle( BLEND_STATE );
+	while ( 1 ) {
+		if ( WEAPON_LOWERWEAPON ) {
+			weaponState( "Lower", BLEND_STATE );
+		}
+		if ( WEAPON_ATTACK ) {
+			if ( CanFire() ) {
+				weaponState( "Fire", 0 );
+			}
+			// Chargeur vide : un clic par appui, et c'est au joueur de recharger.
+			if ( ammoInClip() <= 0 && trigger_released ) {
+				startSound( "snd_dryfire", SND_CHANNEL_WEAPON, false );
+				trigger_released = false;
+			}
+		} else {
+			trigger_released = true;
+		}
+		if ( WEAPON_RELOAD && CanReload() ) {
+			weaponState( "Reload", BLEND_STATE );
+		}
+		if ( UNHOLY_AIM != aimed ) {
+			aimed = UNHOLY_AIM;
+			if ( aimed ) {
+				PlayDesiredCycle( BLEND_AIM_IN );
+			} else {
+				PlayDesiredCycle( BLEND_AIM_OUT );
+			}
+		} else {
+			PlayDesiredCycle( BLEND_CYCLE );
+		}
+		waitFrame();
+	}
+}
+
+void weapon_unholy_rifle::Fire()
+{
+	// La cadence se compte d'un coup a l'autre, pas d'une image a l'autre : ce
+	// qui depasse d'un intervalle se reporte sur le suivant, sans quoi 700 coups
+	// par minute tombaient a 600, l'intervalle s'arrondissant a six images.
+	if ( next_shot < sys.getTime() - fire_delay ) {
+		next_shot = sys.getTime();
+	}
+	next_shot = next_shot + fire_delay;
+	launchProjectiles( 1, Spread(), 0, 1.0, 1.0 );
+	startSound( "snd_fire", SND_CHANNEL_ANY, false );
+	if ( UNHOLY_AIM ) {
+		playAnim( ANIMCHANNEL_ALL, "aim_fire" );
+	} else {
+		playAnim( ANIMCHANNEL_ALL, "fire" );
+	}
+	cycle = "";
+
+	// Tir automatique : tant que la detente est tenue, le coup suivant part a
+	// sa cadence ; sinon l'animation du coup finit et l'arme revient au repos.
+	while ( !animDone( ANIMCHANNEL_ALL, BLEND_STATE ) ) {
+		if ( WEAPON_ATTACK && CanFire() ) {
+			weaponState( "Fire", 0 );
+		}
+		if ( WEAPON_RELOAD && CanReload() ) {
+			weaponState( "Reload", BLEND_STATE );
+		}
+		waitFrame();
+	}
+	weaponState( "Idle", BLEND_STATE );
+}
+
+void weapon_unholy_rifle::Reload()
+{
+	weaponReloading();
+	playAnim( ANIMCHANNEL_ALL, "reload" );
+	while ( !animDone( ANIMCHANNEL_ALL, BLEND_STATE ) ) {
+		waitFrame();
+	}
+	addToClip( clipSize() );
+	weaponState( "Idle", BLEND_STATE );
+}
+
+// Etats que le moteur appelle par leur nom.
+void weapon_unholy_rifle::OwnerDied()
+{
+}
+
+void weapon_unholy_rifle::EnterCinematic()
+{
+	while ( 1 ) {
+		waitFrame();
+	}
+}
+
+void weapon_unholy_rifle::ExitCinematic()
+{
+	weaponState( "Idle", 0 );
+}
+
+void weapon_unholy_rifle::NetCatchup()
+{
+	weaponState( "Idle", 0 );
+}
+
+void weapon_unholy_rifle::WeaponStolen()
+{
+}
+
+// Le moteur l'appelle s'il existe, a chaque changement de peau : rien a faire.
+void weapon_unholy_rifle::UpdateSkin()
+{
+}

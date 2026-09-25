@@ -1,0 +1,130 @@
+/*
+	UNHOLY -- le fusil du militaire
+
+	Une carabine a canon court, tenue par des bras animes. Le modele et ses
+	animations viennent du Retro Weapon Pack, convertis sur place par
+	tools/assets/build_retro_weapons.sh (ils ne sont pas dans le depot) ; ces
+	declarations sont a nous.
+
+	L'arme du moteur (idWeapon) fait tout le travail : le modele a l'oeil, les
+	animations, le chargeur, les projectiles, l'eclat et sa lumiere, le recul
+	de la vue. Son comportement se decrit dans script/weapon_unholy_rifle.script.
+*/
+
+/*
+	Les animations, a 24 images par seconde comme le pack. Les sons du
+	rechargement tombent sur les images ou le chargeur quitte le fusil et y
+	revient, puis ou le levier d'armement part et claque : ces images ont ete
+	relevees sur les os du chargeur et du levier.
+*/
+model viewmodel_unholy_rifle
+{
+	mesh						models/retro/rifle_view.glb
+
+	anim idle					models/retro/rifle_view.idle.glb
+	anim walk					models/retro/rifle_view.walk.glb
+	anim run					models/retro/rifle_view.run.glb
+	anim crouch_idle			models/retro/rifle_view.crouch_idle.glb
+	anim crouch_walk			models/retro/rifle_view.crouch_walk.glb
+	anim aim_in					models/retro/rifle_view.aim_in.glb
+	anim aim_idle				models/retro/rifle_view.aim_idle.glb
+	anim aim_walk				models/retro/rifle_view.aim_walk.glb
+	anim aim_out				models/retro/rifle_view.aim_out.glb
+	anim aim_fire				models/retro/rifle_view.aim_fire.glb
+	anim fire					models/retro/rifle_view.fire.glb
+	anim raise					models/retro/rifle_view.raise.glb
+	anim putaway				models/retro/rifle_view.putaway.glb
+	anim reload					models/retro/rifle_view.reload.glb
+	{
+		frame 14				sound_weapon unholy_rifle_magout
+		frame 36				sound_weapon unholy_rifle_magin
+		frame 55				sound_weapon unholy_rifle_chargepull
+		frame 64				sound_weapon unholy_rifle_chargerelease
+	}
+}
+
+entityDef weapon_unholy_rifle
+{
+	"weapon_scriptobject"		"weapon_unholy_rifle"
+	"model_view"				"viewmodel_unholy_rifle"
+	"display_name"				"Carabine"
+	"def_projectile"			"projectile_unholy_rifle"
+
+	// chargeur et munitions
+	"ammoType"					"ammo_rifle"
+	"ammoRequired"				"1"
+	"clipSize"					"30"
+	"lowAmmo"					"8"
+
+	// cadence et dispersion, lues par le script
+	"rate_of_fire"				"700"	// coups par minute
+	"spread_hip"				"2.2"	// degres, a la hanche
+	"spread_aim"				"0.15"	// degres, epaule
+	"spread_move"				"1.5"	// degres de plus en se deplacant a la hanche
+
+	// epauler : le champ de vision se resserre (90 a la hanche)
+	"zoomFov"					"72"
+
+	// l'eclat et la lumiere qu'il jette sur l'arme, les mains et les murs
+	"mtr_flashShader"			"lights/defaultPointLight"
+	"flashColor"				"1 0.72 0.42"
+	"flashRadius"				"220"
+	"flashTime"					"0.05"
+	"flashPointLight"			"1"
+
+	// le recul de la vue : un coup de nez vers le haut, qui revient
+	"recoilTime"				"90"
+	"recoilAngles"				"-0.9 0.15 0"
+
+	// L'arme suit le regard avec un peu de retard, mais ne tangue plus d'elle
+	// meme : les animations respirent et marchent deja.
+	"weaponAngleOffsetAverages"	"10"
+	"weaponAngleOffsetScale"	"0.12"
+	"weaponAngleOffsetMax"		"4"
+	"weaponOffsetTime"			"350"
+	"weaponOffsetScale"			"0.003"
+	"weaponBobScale"			"0"
+	"weaponDriftScale"			"0"
+
+	"snd_fire"					"unholy_rifle_fire"
+	"snd_dryfire"				"unholy_rifle_dry"
+}
+
+/*
+	La balle. Le moteur n'a pas de tir instantane en solo : c'est un projectile
+	tres rapide, sans gravite, dont la collision est calculee sur toute sa
+	course. A 120 000 unites par seconde, il traverse un couloir de vingt metres
+	dans l'image meme du tir.
+*/
+entityDef projectile_unholy_rifle
+{
+	"spawnclass"				"idProjectile"
+	"mins"						"-0.5 -0.5 -0.5"
+	"maxs"						"0.5 0.5 0.5"
+	"velocity"					"120000 0 0"
+	"gravity"					"0"
+	"mass"						"1"
+	"fuse"						"1"
+	"detonate_on_world"			"1"
+	"detonate_on_actor"			"1"
+	"net_instanthit"			"1"
+	"def_damage"				"damage_unholy_rifle"
+	"push"						"600"
+
+	// l'impact : un son et un trou selon la matiere touchee
+	"impact_damage_effect"		"1"
+	"mtr_detonate"				"textures/unholy/decals/bullet_hole"
+	"decal_size"				"3"
+	"snd_stone"					"unholy_impact_stone"
+	"snd_metal"					"unholy_impact_metal"
+	"snd_wood"					"unholy_impact_wood"
+	"snd_impact"				"unholy_impact_stone"
+}
+
+entityDef damage_unholy_rifle
+{
+	"damage"					"25"
+	"kickDir"					"1 0 0"
+	"push"						"600"
+	"knockback"					"2"
+}

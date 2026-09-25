@@ -232,3 +232,112 @@ Ce que ces chiffres ne disent pas : si c'est juste. Ils disent que les
 exploits sont fermés et que les temps sont ceux qu'on a visés. Le reste se
 juge en jouant, relevé affiché (`F3`), et les valeurs se reprennent à la
 console. Le banc est là pour que la retouche suivante se compare à celle-ci.
+
+---
+
+## 9. Le fusil du militaire
+
+Posé à la milestone 3, sous id Tech 4. Le fusil et les bras viennent du Retro
+Weapon Pack, avec leurs animations : c'est lui qui donne la prise en main, pas
+un réglage. Le prototype avait appris que la pose dépend de la présence des
+bras (section 2) ; le pack règle la question, les bras sont dessinés et
+animés avec l'arme. Le fusil tient en bas à droite, le bras gauche de soutien
+reste visible sous le garde-main.
+
+Les valeurs vivent dans `content/def/unholy_weapons.def`, le comportement
+dans `content/script/weapon_unholy_rifle.script`, les règles de déplacement
+dans le joueur (`neo/unholy/player/UnholyPlayer.cpp`).
+
+### Le tir
+
+| Réglage | Valeur | Intention |
+| --- | --- | --- |
+| Cadence | 700 coups/min, soit 86 ms | Automatique, chaque coup compté |
+| Chargeur, réserve | 30, 90 au départ (240 au plus) | Trois chargeurs : chaque rechargement compte |
+| Dégâts | 25 par balle | La cible tombe en trois balles |
+| Dispersion à la hanche | 2,2°, 3,7° en se déplaçant | On touche à courte distance, on arrose au-delà |
+| Dispersion épaulé | 0,15° | La balle part où l'on vise |
+| Recul de la vue | 0,9° vers le haut, 0,15° de côté, revenu en 90 ms | Le nez se relève à chaque coup, la visée reste |
+| Munitions basses | 8 cartouches | Le compteur passe à l'orange |
+| Rechargement | 3,5 s, l'animation du pack | Long : on le choisit, on ne le subit pas |
+
+Le tir se compte d'un coup à l'autre, pas d'une image à l'autre : ce qui
+dépasse d'un intervalle se reporte sur le suivant. Sans cela, 700 coups par
+minute tombaient à 600, l'intervalle s'arrondissant à six images de 60 Hz.
+
+**On ne tire pas en courant.** Tirer ou épauler coupe la course, et l'arme
+attend d'être revenue en main pour partir. C'est ce qui fait choisir entre se
+déplacer et combattre.
+
+### L'arme dans la main
+
+| Réglage | Valeur | Intention |
+| --- | --- | --- |
+| Balancement et dérive du moteur | coupés | Les animations respirent et marchent déjà : les deux s'ajoutaient |
+| Retard sur le regard | moyenne sur 10 images, 0,12 par degré, 4° au plus | Une masse au bout des bras |
+| Retard sur le déplacement | 350 ms, 0,003 | À peine : le corps porte l'arme |
+| Épauler, relâcher | 0,13 s, 0,10 s (fondus des animations) | Les durées du prototype, qui se sentaient justes |
+| Champ épaulé | 72°, depuis 90° | Grossissement de 1,38 ; le prototype allait à 1,66, avec une optique |
+
+Couper le balancement et la dérive du moteur demande un réglage que
+`idWeapon` n'avait pas : deux clés de l'arme, `weaponBobScale` et
+`weaponDriftScale`, ajoutées par le correctif 0009 (défaut 1, le
+comportement d'origine).
+
+### Ce que le joueur lit
+
+| Élément | Valeur | Intention |
+| --- | --- | --- |
+| Réticule | quatre branches de 5 px, écart suivant la dispersion réelle (2 px au moins) | Il dit où partira la balle, pas une décoration |
+| Réticule masqué | épaulé, en course, en rechargement | On vise par l'arme, ou on ne vise pas |
+| Compteur | chargeur en grand, réserve en petit, en bas à droite | Lisible d'un coup d'œil, loin de l'arme |
+
+L'écart du réticule est la dispersion projetée à l'écran :
+`tan(dispersion) / tan(champ / 2) × demi-largeur`. Il s'ouvre donc en marchant
+et se referme à l'arrêt, comme la balle.
+
+### L'éclat, les impacts, la cible
+
+| Élément | Valeur | Intention |
+| --- | --- | --- |
+| Lumière de l'éclat | rayon 220 u (5,6 m), teinte `1 0,72 0,42`, 50 ms | Le tir éclaire l'arme, les mains et la pièce |
+| Flamme au canon | 45 ms, tournée au hasard à chaque coup, 1,8 fois plus forte que l'image | À 1, dans le rendu HDR, elle ne faisait qu'un halo |
+| Trous de balle | 3 u, 30 s | Le mur garde la trace de la rafale |
+| Son de l'impact | selon la matière touchée : pierre, métal, bois | |
+| Cible | 75 points, tombe en 0,35 s, reste 4 s, se relève en 0,6 s | De quoi s'entraîner sans recharger la carte |
+
+### Le mixage
+
+Tous les sons sont synthétisés par `tools/sounds/make_weapon_sounds.py` et
+normalisés au même niveau ; c'est le volume de chaque son qui fait le mixage.
+
+| Son | Volume | Pourquoi |
+| --- | --- | --- |
+| Tir | -3 dB | Les queues de coups se superposent en rafale |
+| Impacts | -8 dB | Le moteur n'atténue que de 3 dB un son à cinq mètres |
+| Choc sur la cible | -6 dB | |
+| Chute de la cible | -4 dB | Entendue seule |
+| Mécanique (chargeur, levier, clic à vide) | 0 dB | Entendue seule |
+
+Sans ces volumes, le premier coup montait à 1,38 fois le plein niveau : le
+tir, l'impact et le choc sur la cible partent au même instant. Relevé sur le
+mixage du moteur, enregistré sans passer par les haut-parleurs
+(`docs/DEBUG.md`) : la rafale plafonne à 0,82, le rechargement à 0,54.
+
+### Ce que mesure le banc
+
+`tools/movetest.sh tir`, face à la cible de la pièce principale : une rafale
+de 1,5 s à la hanche, une rafale épaulée, un rechargement.
+
+| Mesure | Relevé |
+| --- | --- |
+| Rafale de 1,5 s | chargeur 30 → 12 : 18 coups, 700 par minute |
+| Rafale épaulée | chargeur 12 → 0 |
+| Rechargement | chargeur 0 → 30, réserve 90 → 60 |
+| Intervalle entre deux coups, à l'oreille | 87 ms en moyenne, pour 86 attendues |
+| Sons du rechargement | chargeur sorti, remis, levier tiré, relâché : 0,92, 0,78 et 0,39 s d'écart à l'oreille, pour 0,92, 0,79 et 0,38 d'après les images relevées sur les os du pack |
+
+Ce que ces chiffres ne disent pas : si le fusil a du poids. Le recul, le
+retard sur le regard et le champ épaulé se jugent en jouant ; ils se
+reprennent dans la déclaration de l'arme, puis `reloadDecls` à la console et
+la carte relancée.

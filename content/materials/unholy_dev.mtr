@@ -71,3 +71,30 @@ textures/unholy/dev/neon
 		map		textures/unholy/dev/neon
 	}
 }
+
+/*
+	La cible d'entrainement : une silhouette imprimee sur du contreplaque.
+*/
+textures/unholy/dev/target
+{
+	qer_editorimage	textures/unholy/dev/target
+	wood
+	basecolormap	textures/unholy/dev/target
+}
+
+/*
+	Impact de balle. Il reste une demi-minute, puis s'efface. Il n'est pas
+	eclaire : un trou sombre reste sombre, et dans le noir on ne le voit pas.
+*/
+textures/unholy/decals/bullet_hole
+{
+	qer_editorimage	textures/unholy/decals/bullet_hole
+	DECAL_MACRO
+	decalInfo 30 2 ( 1 1 1 1 ) ( 1 1 1 0 )
+	{
+		blend		blend
+		map			textures/unholy/decals/bullet_hole
+		nearest
+		vertexColor
+	}
+}

@@ -3,9 +3,10 @@
 La migration room : la premiere carte d'UNHOLY sur id Tech 4.
 
 Le brief la definit mot pour mot : une piece, un couloir, un mur, un plafond,
-une porte, une lumiere fixe, un neon, une zone sombre. Rien d'autre. Elle sert
-a valider la fondation, et chaque milestone y ajoute ce qu'elle valide : le
-fusil et la cible avec la 3, la lampe avec la 4.
+une porte, une lumiere fixe, un neon, une zone sombre, et une cible qui
+encaisse et meurt. Elle sert a valider la fondation, et chaque milestone y
+ajoute ce qu'elle valide : le fusil et les cibles avec la 3, la lampe avec la
+4.
 
     piece (6,1 x 4,9 m) --porte-- couloir (19,5 x 2,4 m) ---------+
       plafonnier                    neon            zone sombre   | recoin
@@ -61,6 +62,15 @@ NOOK_Y1 = COR_Y1 + 160
 
 # Le neon, a mi-couloir.
 NEON_X = COR_X0 + 272
+
+# Les cibles : une planche de 61 x 168 cm, posee debout face a la piece.
+TARGET = 'textures/unholy/dev/target'
+TARGET_W, TARGET_H, TARGET_T = 24, 66, 1.5
+TARGETS = (
+    ('target_room', (200, 62)),                 # dans la piece, a cote de la porte
+    ('target_neon', (NEON_X + 40, -18)),        # sous le neon
+    ('target_dark', (COR_X1 - 190, 16)),        # dans la zone sombre
+)
 
 
 def main():
@@ -120,6 +130,16 @@ def main():
                  wait=4, triggersize=64).add(
         box((mid - DOOR_PANEL / 2, DOOR_Y0, 0), (mid + DOOR_PANEL / 2, DOOR_Y1, DOOR_TOP), DOOR,
             matrices={'x+': fit, 'x-': fit_back}))
+
+    # Les cibles. Une entite faite de brushes et dotee d'une origine decrit
+    # ses brushes autour de cette origine : la planche est donc dessinee
+    # autour de sa base, la ou elle pivote en tombant.
+    half_w = TARGET_W / 2
+    face = texmat(1 / TARGET_W, 1 / TARGET_H, 0.5, 1)
+    for name, (x, y) in TARGETS:
+        world.entity('unholy_target', name=name, origin=vec(x, y, 0)).add(
+            box((-TARGET_T / 2, -half_w, 0), (TARGET_T / 2, half_w, TARGET_H), TARGET,
+                matrices={'x+': face, 'x-': face}))
 
     # Le militaire entre dans la piece face a la porte.
     world.entity('info_player_start', name='start_military', origin=vec(56, 0, 1), angle=0)

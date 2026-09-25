@@ -36,21 +36,47 @@ entityDef func_door
 }
 
 /*
+	La cible d'entrainement de la migration room : elle encaisse, tombe en
+	arriere quand sa sante est a zero, et se releve quelques secondes plus
+	tard. C'est l'ennemi simple que demande le brief, en attendant le possede.
+	Faite de brushes dans la carte, son origine a sa base : elle pivote la.
+*/
+entityDef unholy_target
+{
+	"spawnclass"		"UnholyTarget"
+	"health"			"75"		// trois balles
+	"fall_time"			"0.35"
+	"down_time"			"4"
+	"rise_time"			"0.6"
+	"snd_hit"			"unholy_target_hit"
+	"snd_fall"			"unholy_target_fall"
+}
+
+/*
 	Le militaire. La carte le designe par la cle "def_player" de son monde :
 	le moteur ne l'appelle donc jamais par le nom du marine de Doom 3.
 
-	Pas encore d'arme ni de modele : le fusil arrive avec la milestone 3, la
-	lampe avec la 4.
+	Il porte la carabine (def/unholy_weapons.def) et quatre chargeurs, dont un
+	engage. La lampe, montee sur le fusil, arrive avec la milestone 4.
 */
 entityDef player_unholy_military
 {
 	"spawnclass"		"UnholyPlayer"
 	"scriptobject"		"player_unholy"
-	"no_Weapons"		"1"
 	// Pas de lampe d'epaule : celle d'UNHOLY est montee sur le fusil.
 	"no_flashlight"		"1"
 	"startingHealth"	"100"
 	"mass"				"100"
+
+	// L'arme et ses munitions : 30 dans le fusil, 90 en reserve. Le chargeur
+	// est donne a part (clip0) : laisse vide, le moteur le remplirait en puisant
+	// dans la reserve, et deux fois, l'arme etant preparee deux fois au depart.
+	"def_weapon0"		"weapon_unholy_rifle"
+	"weapon"			"weapon_unholy_rifle"
+	"current_weapon"	"0"
+	"clip0"				"30"
+	"ammo_rifle"		"90"
+	"max_ammo_rifle"	"240"
 
 	/*
 		Deplacement. Chaque cle pm_ regle la variable du meme nom a

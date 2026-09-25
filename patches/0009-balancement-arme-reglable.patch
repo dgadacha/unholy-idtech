@@ -1,0 +1,87 @@
+diff --git a/neo/d3xp/Player.cpp b/neo/d3xp/Player.cpp
+index fa9b89e..d09a61a 100644
+--- a/neo/d3xp/Player.cpp
++++ b/neo/d3xp/Player.cpp
+@@ -10537,10 +10537,15 @@ void idPlayer::CalculateViewWeaponPos( idVec3& origin, idMat3& axis )
+ 		scale = xyspeed;
+ 	}
+ 
++	// UNHOLY: l'arme dose le balancement et la derive qu'on lui ajoute ; celle
++	// dont les animations respirent et marchent deja les coupe.
++	const float bobScale = weapon.GetEntity() ? weapon.GetEntity()->GetWeaponBobScale() : 1.0f;
++	const float driftScale = weapon.GetEntity() ? weapon.GetEntity()->GetWeaponDriftScale() : 1.0f;
++
+ 	// gun angles from bobbing
+-	angles.roll		= scale * bobfracsin * 0.005f;
+-	angles.yaw		= scale * bobfracsin * 0.01f;
+-	angles.pitch	= xyspeed * bobfracsin * 0.005f;
++	angles.roll		= scale * bobfracsin * 0.005f * bobScale;
++	angles.yaw		= scale * bobfracsin * 0.01f * bobScale;
++	angles.pitch	= xyspeed * bobfracsin * 0.005f * bobScale;
+ 
+ 	// gun angles from turning
+ 	if( common->IsMultiplayer() )
+@@ -10569,7 +10574,7 @@ void idPlayer::CalculateViewWeaponPos( idVec3& origin, idMat3& axis )
+ 
+ 	// speed sensitive idle drift
+ 	scale = xyspeed + 40.0f;
+-	fracsin = scale * sin( MS2SEC( gameLocal.time ) ) * 0.01f;
++	fracsin = scale * sin( MS2SEC( gameLocal.time ) ) * 0.01f * driftScale;
+ 	angles.roll		+= fracsin;
+ 	angles.yaw		+= fracsin;
+ 	angles.pitch	+= fracsin;
+diff --git a/neo/d3xp/Weapon.cpp b/neo/d3xp/Weapon.cpp
+index e729084..1d5cc21 100644
+--- a/neo/d3xp/Weapon.cpp
++++ b/neo/d3xp/Weapon.cpp
+@@ -925,6 +925,9 @@ void idWeapon::Clear()
+ 	weaponAngleOffsetMax		= 0.0f;
+ 	weaponOffsetTime			= 0.0f;
+ 	weaponOffsetScale			= 0.0f;
++	// UNHOLY: sans cle dans la declaration, l'arme garde ce que le moteur ajoute.
++	weaponBobScale				= 1.0f;
++	weaponDriftScale			= 1.0f;
+ 
+ 	allowDrop			= true;
+ 
+@@ -1265,6 +1268,10 @@ void idWeapon::GetWeaponDef( const char* objectname, int ammoinclip )
+ 	weaponOffsetTime = weaponDef->dict.GetFloat( "weaponOffsetTime", "400" );
+ 	weaponOffsetScale = weaponDef->dict.GetFloat( "weaponOffsetScale", "0.005" );
+ 
++	// UNHOLY
++	weaponBobScale = weaponDef->dict.GetFloat( "weaponBobScale", "1" );
++	weaponDriftScale = weaponDef->dict.GetFloat( "weaponDriftScale", "1" );
++
+ 	if( !weaponDef->dict.GetString( "weapon_scriptobject", NULL, &objectType ) )
+ 	{
+ 		gameLocal.Error( "No 'weapon_scriptobject' set on '%s'.", objectname );
+diff --git a/neo/d3xp/Weapon.h b/neo/d3xp/Weapon.h
+index 28e73be..7e3722f 100644
+--- a/neo/d3xp/Weapon.h
++++ b/neo/d3xp/Weapon.h
+@@ -165,6 +165,16 @@ public:
+ 	int						GetZoomFov();
+ 	void					GetWeaponAngleOffsets( int* average, float* scale, float* max );
+ 	void					GetWeaponTimeOffsets( float* time, float* scale );
++	// UNHOLY: part du balancement et de la derive au repos que le joueur ajoute a
++	// l'arme. Une arme dont les animations respirent et marchent deja les coupe.
++	float					GetWeaponBobScale() const
++	{
++		return weaponBobScale;
++	}
++	float					GetWeaponDriftScale() const
++	{
++		return weaponDriftScale;
++	}
+ 	bool					BloodSplat( float size );
+ 	void					SetIsPlayerFlashlight( bool bl )
+ 	{
+@@ -381,6 +391,8 @@ private:
+ 	float					weaponAngleOffsetMax;
+ 	float					weaponOffsetTime;
+ 	float					weaponOffsetScale;
++	float					weaponBobScale;			// UNHOLY
++	float					weaponDriftScale;		// UNHOLY
+ 
+ 	// flashlight
+ 	void					AlertMonsters();

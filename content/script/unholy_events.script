@@ -1,0 +1,39 @@
+/***********************************************************************
+
+	UNHOLY -- les evenements du moteur dont nos scripts se servent
+
+	Le compilateur de scripts ne connait des evenements du moteur que ceux
+	qu'on lui declare. Doom 3 les declarait tous dans un fichier de ses
+	donnees ; UNHOLY ne declare que ceux qu'il utilise. Chaque signature
+	reprend l'idEventDef du moteur : d et f s'y lisent float, s string, e
+	entity, et le compilateur refuse une declaration qui ne colle pas.
+
+***********************************************************************/
+
+// le fil d'execution (idThread)
+scriptEvent	void	wait( float time );
+scriptEvent	void	waitFrame();
+scriptEvent	float	getTime();
+
+// toute entite (idEntity)
+scriptEvent	float	getFloatKey( string key );
+scriptEvent	float	startSound( string sound, float channel, float netSync );
+
+// les animations (idActor, idWeapon)
+scriptEvent	float	playAnim( float channel, string animName );
+scriptEvent	float	playCycle( float channel, string animName );
+scriptEvent	float	animDone( float channel, float blendFrames );
+scriptEvent	void	setBlendFrames( float channel, float blendFrames );
+
+// l'arme (idWeapon)
+scriptEvent	void	weaponState( string stateFunction, float blendFrames );
+scriptEvent	void	weaponReady();
+scriptEvent	void	weaponRising();
+scriptEvent	void	weaponLowering();
+scriptEvent	void	weaponHolstered();
+scriptEvent	void	weaponReloading();
+scriptEvent	void	launchProjectiles( float numProjectiles, float spread, float fuseOffset, float launchPower, float dmgPower );
+scriptEvent	float	ammoInClip();
+scriptEvent	float	ammoAvailable();
+scriptEvent	float	clipSize();
+scriptEvent	void	addToClip( float amount );
