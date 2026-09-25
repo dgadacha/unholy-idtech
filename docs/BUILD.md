@@ -35,8 +35,9 @@ git submodule update --init --recursive --depth 1
 ```
 
 Le fusil et les bras viennent du **Retro Weapon Pack**, qui n'est pas dans le
-dépôt ([`LICENSES.md`](LICENSES.md)). Une fois l'archive téléchargée, on la
-convertit pour le moteur :
+dépôt ([`LICENSES.md`](LICENSES.md)). L'archive se télécharge gratuitement sur
+[kuptchi.itch.io/f](https://kuptchi.itch.io/f) (`RetroWeaponPack_V1.zip`,
+482 Mo) ; on la convertit ensuite pour le moteur :
 
 ```bash
 tools/assets/build_retro_weapons.sh ~/Downloads/RetroWeaponPack_V1.zip

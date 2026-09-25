@@ -44,20 +44,23 @@ entre. Pas après.
 | --- | --- | --- | --- | --- |
 | Barlow Condensed Medium | Police par défaut du moteur (`newfonts/Unholy`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/barlowcondensed` — licence dans `tools/fontgen/sources/` | M1 |
 | IBM Plex Mono Regular | Jeu de caractères de la console (`bigchars`) | SIL OFL 1.1 | github.com/google/fonts, `ofl/ibmplexmono` — licence dans `tools/fontgen/sources/` | M1 |
-| Retro Weapon Pack V1, par kuptchi | Fusil, bras et leurs animations, flamme du tir (`content/models/retro/`, `content/textures/retro/`) | Gratuit pour les projets personnels et commerciaux, attribution non requise mais appréciée (`Readme.pdf` de l'archive) | archive `RetroWeaponPack_V1.zip` ; auteur joignable sur Discord, `kuptchi` ; page de téléchargement à consigner | M3 |
+| Retro Weapon Pack V1 (« PSX-Weapons Assets [Free Pack] »), par Kuptchi | Fusil, bras et leurs animations, flamme du tir (`content/models/retro/`, `content/textures/retro/`) | Usage libre, commercial compris, sans crédit obligatoire ; interdit de revendre le pack (page itch.io et `Readme.pdf` de l'archive) | kuptchi.itch.io/f, archive `RetroWeaponPack_V1.zip` (482 Mo), gratuite, page consultée le 25 septembre 2026 ; auteur joignable sur Discord, `kuptchi` | M3 |
 
 La licence OFL impose de livrer le texte de la licence avec la police, et
 interdit de vendre la police seule. Les deux sont respectés tant que le texte
 voyage dans le paquet.
 
-**Le Retro Weapon Pack n'est pas dans le dépôt.** Son Readme autorise l'usage
-dans un jeu, commercial compris, mais ne dit rien de la redistribution de ses
-fichiers, et le dépôt est public. Seuls le script de conversion
+**Le Retro Weapon Pack n'est pas dans le dépôt.** Sa page le dit « free to
+use by anyone, for anything », sans crédit obligatoire, avec une seule
+réserve : ne pas le revendre. Vendre un jeu qui s'en sert n'est pas revendre
+le pack ; le verser brut dans un dépôt public le mettrait à la portée de qui
+voudrait le revendre. L'auteur déclare n'avoir utilisé aucune IA générative,
+ce que demande le questionnaire de Steam. Seuls le script de conversion
 (`tools/assets/`) et nos déclarations (`content/def/unholy_weapons.def`,
 `content/materials/retro_weapons.mtr`) sont versionnés ; les fichiers
 convertis sont produits sur chaque machine depuis l'archive et ignorés par
-git. Le jeu vendu les embarquera convertis : c'est l'usage que le Readme
-autorise. La conversion les modifie (squelettes des bras et du fusil réunis,
+git. Le jeu vendu les embarquera convertis : c'est l'usage que la page et
+le Readme autorisent. La conversion les modifie (squelettes des bras et du fusil réunis,
 animations recalculées, unités, flamme estompée vers le bord), ce que le
 Readme ne défend pas : il conseille lui-même un outil pour retoucher les
 textures. L'auteur sera crédité au générique, même sans obligation.
